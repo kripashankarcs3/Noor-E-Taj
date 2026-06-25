@@ -190,17 +190,6 @@ export default function LoginPage({ onLoginSuccess }) {
       return;
     }
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      setError('Please enter a valid email address.');
-      return;
-    }
-
-    if (password.length < 1) {
-      setError('Password must be at least 1 character.');
-      return;
-    }
-
     setError('');
     const userName = email.split('@')[0];
     const fakeUser = {
