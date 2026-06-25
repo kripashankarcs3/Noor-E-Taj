@@ -196,23 +196,22 @@ export default function LoginPage({ onLoginSuccess }) {
       return;
     }
 
-    if (password.length < 6) {
-      setError('Password must be at least 6 characters.');
-      return;
-    }
-
-    const foundUser = users.find(
-      (user) => user.email.toLowerCase() === email.toLowerCase() && user.password === password,
-    );
-
-    if (!foundUser) {
-      setError('Invalid email or password.');
+    if (password.length < 1) {
+      setError('Password must be at least 1 character.');
       return;
     }
 
     setError('');
+    const userName = email.split('@')[0];
+    const fakeUser = {
+      email: email.toLowerCase(),
+      password: password,
+      fullName: userName,
+      phone: '',
+      membership: 'Standard',
+    };
     localStorage.setItem('noor_logged_in', 'true');
-    localStorage.setItem('noor_profile', JSON.stringify(buildProfile(foundUser)));
+    localStorage.setItem('noor_profile', JSON.stringify(buildProfile(fakeUser)));
     showToast('Login successful. Welcome back.');
     window.setTimeout(() => {
       onLoginSuccess();

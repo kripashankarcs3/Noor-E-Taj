@@ -1329,6 +1329,7 @@ function App() {
           </div>
         )}
 
+        </Suspense>
         </div>{/* end main-scrollable */}
 
         {/* NOTIFICATIONS SLIDE-IN PANEL */}

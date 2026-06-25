@@ -7,9 +7,16 @@ export default defineConfig({
   build: {
     rollupOptions: {
       output: {
-        manualChunks: {
-          vendor: ['react', 'react-dom', 'framer-motion'],
-          lucide: ['lucide-react'],
+        manualChunks(id) {
+          if (id.includes('node_modules/react/') || id.includes('node_modules/react-dom/') || id.includes('node_modules/framer-motion/')) {
+            return 'vendor'
+          }
+          if (id.includes('node_modules/lucide-react/')) {
+            return 'lucide'
+          }
+          if (id.includes('node_modules/')) {
+            return 'vendor'
+          }
         },
       },
     },
