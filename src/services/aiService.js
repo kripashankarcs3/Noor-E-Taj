@@ -1,3 +1,10 @@
+let _onApiKeyNeeded = null;
+let _pendingAction = null;
+
+export function setApiKeyHandler(handler) {
+  _onApiKeyNeeded = handler;
+}
+
 function getApiKey() {
   const fromStorage = localStorage.getItem('noor_api_key');
   if (fromStorage) return fromStorage;
@@ -11,6 +18,29 @@ export function saveApiKey(key) {
 export function hasApiKey() {
   const key = getApiKey();
   return !!(key && key !== 'your_openrouter_api_key_here');
+}
+
+export function ensureApiKey(action) {
+  if (hasApiKey()) {
+    action();
+    return;
+  }
+  _pendingAction = action;
+  if (_onApiKeyNeeded) {
+    _onApiKeyNeeded();
+  }
+}
+
+export function retryPendingAction() {
+  if (_pendingAction) {
+    const fn = _pendingAction;
+    _pendingAction = null;
+    fn();
+  }
+}
+
+export function clearPendingAction() {
+  _pendingAction = null;
 }
 
 export async function askOpenRouter(prompt, systemInstruction = "") {
@@ -30,7 +60,7 @@ export async function askOpenRouter(prompt, systemInstruction = "") {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        model: "google/gemini-2.5-flash:free",
+        model: "openrouter/free",
         messages: [
           ...(systemInstruction ? [{ role: "system", content: systemInstruction }] : []),
           { role: "user", content: prompt }

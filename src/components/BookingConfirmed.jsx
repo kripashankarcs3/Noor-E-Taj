@@ -93,7 +93,7 @@ export default function BookingConfirmed({ onViewBooking, onDashboard }) {
         </div>
 
         {/* Success Message */}
-        <div style={{ background: 'linear-gradient(135deg, #fff9f5, #fef3ea)', border: '1px solid rgba(196,159,87,0.2)', borderRadius: 'var(--radius-md)', padding: '18px 24px', marginBottom: '24px' }}>
+        <div style={{ background: 'var(--card-bg-elevated)', border: '1px solid var(--card-border)', borderRadius: 'var(--radius-md)', padding: '18px 24px', marginBottom: '24px' }}>
           <p style={{ fontSize: '0.85rem', color: 'var(--text-dark)', lineHeight: 1.6, margin: 0 }}>
             <span style={{ fontFamily: 'var(--font-heading)', fontSize: '1rem' }}>💕 Your dream wedding journey begins now!</span><br />
             We'll send you a confirmation email with all the details. The artist will reach out to you within 24 hours.

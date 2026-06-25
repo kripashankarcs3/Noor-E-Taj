@@ -168,7 +168,7 @@ export default function WalletOffers({ onBack }) {
                   onMouseOut={e => e.currentTarget.style.boxShadow = 'none'}
                 >
                   {/* Badge */}
-                  <div style={{ width: 52, height: 52, borderRadius: 'var(--radius-sm)', background: offer.badgeColor, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, textAlign: 'center' }}>
+                  <div style={{ width: 52, height: 52, borderRadius: 'var(--radius-sm)', background: 'rgba(196,159,87,0.12)', border: '1px solid rgba(196,159,87,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, textAlign: 'center' }}>
                     <span style={{ color: offer.badgeText, fontWeight: 700, fontSize: offer.badge.length > 3 ? '0.7rem' : '1.2rem', fontFamily: 'var(--font-btn)', whiteSpace: 'pre-line', lineHeight: 1.2 }}>{offer.badge}</span>
                   </div>
 
@@ -182,12 +182,12 @@ export default function WalletOffers({ onBack }) {
                   {/* Code / Auto Applied */}
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', alignItems: 'flex-end', flexShrink: 0 }}>
                     {offer.autoApplied ? (
-                      <div style={{ background: '#edfdf5', border: '1px solid #2ecc71', borderRadius: 6, padding: '6px 12px', fontSize: '0.75rem', fontWeight: 700, color: '#2ecc71', fontFamily: 'var(--font-btn)', display: 'flex', alignItems: 'center', gap: 5 }}>
+                      <div style={{ background: 'rgba(46,204,113,0.12)', border: '1px solid rgba(46,204,113,0.4)', borderRadius: 6, padding: '6px 12px', fontSize: '0.75rem', fontWeight: 700, color: '#2ecc71', fontFamily: 'var(--font-btn)', display: 'flex', alignItems: 'center', gap: 5 }}>
                         ✓ Auto Applied
                       </div>
                     ) : (
                       <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <div style={{ border: '1.5px dashed var(--maroon-btn)', borderRadius: 6, padding: '6px 12px', fontSize: '0.78rem', fontWeight: 700, color: 'var(--maroon-btn)', fontFamily: 'var(--font-btn)', display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer' }}
+                        <div style={{ border: '1.5px dashed var(--gold-accent)', borderRadius: 6, padding: '6px 12px', fontSize: '0.78rem', fontWeight: 700, color: 'var(--gold-accent)', fontFamily: 'var(--font-btn)', display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer' }}
                           onClick={() => copyCode(offer.code)}
                         >
                           {copied === offer.code ? '✓ Copied!' : offer.code}
@@ -271,7 +271,7 @@ export default function WalletOffers({ onBack }) {
             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
               {displayedTx.map(tx => (
                 <div key={tx.id} style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  <div style={{ width: 32, height: 32, borderRadius: '50%', background: tx.iconBg, display: 'flex', alignItems: 'center', justifyContent: 'center', color: tx.iconColor, fontWeight: 700, fontSize: '0.85rem', flexShrink: 0 }}>
+                  <div style={{ width: 32, height: 32, borderRadius: '50%', background: `${tx.iconColor}22`, border: `1px solid ${tx.iconColor}44`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: tx.iconColor, fontWeight: 700, fontSize: '0.85rem', flexShrink: 0 }}>
                     {tx.icon}
                   </div>
                   <div style={{ flex: 1, textAlign: 'left' }}>
@@ -279,7 +279,7 @@ export default function WalletOffers({ onBack }) {
                     <div style={{ fontSize: '0.65rem', color: 'var(--text-muted)' }}>{tx.date}</div>
                   </div>
                   <div style={{ textAlign: 'right' }}>
-                    <div style={{ fontSize: '0.78rem', fontWeight: 700, color: tx.amountColor, fontFamily: 'var(--font-btn)' }}>{tx.amount}</div>
+                    <div style={{ fontSize: '0.78rem', fontWeight: 700, color: tx.amount.startsWith('+') ? '#2ecc71' : 'var(--maroon-btn)', fontFamily: 'var(--font-btn)' }}>{tx.amount}</div>
                     <div style={{ fontSize: '0.62rem', color: tx.statusColor, fontWeight: 600 }}>{tx.status}</div>
                   </div>
                 </div>
@@ -397,7 +397,7 @@ export default function WalletOffers({ onBack }) {
 
       {/* ── TOAST ── */}
       {toast && (
-        <div style={{ position: 'fixed', bottom: 24, left: '50%', transform: 'translateX(-50%)', background: 'var(--sidebar-bg)', color: 'var(--text-white)', padding: '10px 24px', borderRadius: 'var(--radius-sm)', fontFamily: 'var(--font-btn)', fontSize: '0.82rem', zIndex: 2000, boxShadow: 'var(--shadow-md)' }}>
+        <div className="noor-toast" style={{ position: 'fixed', bottom: 24, left: '50%', transform: 'translateX(-50%)', padding: '10px 24px', borderRadius: 'var(--radius-sm)', fontFamily: 'var(--font-btn)', fontSize: '0.82rem', zIndex: 2000, boxShadow: 'var(--shadow-md)' }}>
           {toast}
         </div>
       )}

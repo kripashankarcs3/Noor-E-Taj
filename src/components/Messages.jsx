@@ -129,7 +129,7 @@ export default function Messages({ onBack, onNavigate, conversations = [], setCo
           {/* Filter Tabs */}
           <div style={{ display: 'flex', gap: '4px', padding: '8px 10px', borderBottom: '1px solid var(--card-border)', flexShrink: 0, overflowX: 'auto' }}>
             {['All', 'Unread', 'Bookings', 'Enquiries'].map(t => (
-              <button key={t} onClick={() => setActiveTab(t)} style={{ padding: '5px 10px', borderRadius: '20px', border: 'none', background: activeTab === t ? 'var(--sidebar-bg)' : 'transparent', color: activeTab === t ? 'var(--text-white)' : 'var(--text-muted)', fontSize: '0.7rem', fontFamily: 'var(--font-btn)', fontWeight: 600, cursor: 'pointer', whiteSpace: 'nowrap' }}>
+              <button key={t} onClick={() => setActiveTab(t)} style={{ padding: '5px 10px', borderRadius: '20px', border: 'none', background: activeTab === t ? 'var(--maroon-btn)' : 'transparent', color: activeTab === t ? 'var(--text-white)' : 'var(--text-muted)', fontSize: '0.7rem', fontFamily: 'var(--font-btn)', fontWeight: 600, cursor: 'pointer', whiteSpace: 'nowrap' }}>
                 {t}
               </button>
             ))}

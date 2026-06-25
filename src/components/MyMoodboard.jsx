@@ -145,7 +145,7 @@ export default function MyMoodboard({ onBack, wishlistItems = [], toggleWishlist
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'var(--card-bg)', borderRadius: 'var(--radius-md)', border: '1px solid var(--card-border)', padding: '4px 8px', marginBottom: '20px', overflowX: 'auto', boxShadow: 'var(--shadow-sm)' }}>
             <div style={{ display: 'flex', gap: '2px' }}>
               {boards.map(b => (
-                <button key={b} onClick={() => setActiveBoard(b)} style={{ padding: '7px 14px', borderRadius: 'var(--radius-sm)', border: 'none', background: activeBoard === b ? 'var(--sidebar-bg)' : 'transparent', color: activeBoard === b ? 'var(--text-white)' : 'var(--text-muted)', fontFamily: 'var(--font-btn)', fontWeight: 600, fontSize: '0.78rem', cursor: 'pointer', transition: 'all 0.2s', whiteSpace: 'nowrap' }}>
+                <button key={b} onClick={() => setActiveBoard(b)} style={{ padding: '7px 14px', borderRadius: 'var(--radius-sm)', border: 'none', background: activeBoard === b ? 'var(--maroon-btn)' : 'transparent', color: activeBoard === b ? 'var(--text-white)' : 'var(--text-muted)', fontFamily: 'var(--font-btn)', fontWeight: 600, fontSize: '0.78rem', cursor: 'pointer', transition: 'all 0.2s', whiteSpace: 'nowrap' }}>
                   {b}
                 </button>
               ))}
@@ -208,7 +208,7 @@ export default function MyMoodboard({ onBack, wishlistItems = [], toggleWishlist
               </p>
               <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
                 {['Glam', 'Soft Glam', 'Royal', 'Warm Tones'].map(tag => (
-                  <span key={tag} style={{ background: 'var(--gold-light, #f6ebd6)', color: 'var(--sidebar-bg)', fontSize: '0.7rem', fontWeight: 600, padding: '3px 10px', borderRadius: '20px', border: '1px solid var(--card-border)', fontFamily: 'var(--font-btn)' }}>
+                  <span key={tag} style={{ background: 'rgba(196,159,87,0.12)', color: 'var(--gold-accent)', fontSize: '0.7rem', fontWeight: 600, padding: '3px 10px', borderRadius: '20px', border: '1px solid rgba(196,159,87,0.25)', fontFamily: 'var(--font-btn)' }}>
                     {tag}
                   </span>
                 ))}
@@ -334,7 +334,7 @@ export default function MyMoodboard({ onBack, wishlistItems = [], toggleWishlist
               <label style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-dark)', fontFamily: 'var(--font-btn)', display: 'block', marginBottom: '6px' }}>Category Tags</label>
               <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
                 {['Makeup', 'Hair', 'Outfit', 'Jewellery', 'Inspo'].map(tag => (
-                  <span key={tag} style={{ background: 'var(--gold-light, #f6ebd6)', color: 'var(--sidebar-bg)', fontSize: '0.72rem', fontWeight: 600, padding: '4px 12px', borderRadius: '20px', border: '1px solid var(--card-border)', fontFamily: 'var(--font-btn)', cursor: 'pointer' }}>
+                  <span key={tag} style={{ background: 'rgba(196,159,87,0.12)', color: 'var(--gold-accent)', fontSize: '0.72rem', fontWeight: 600, padding: '4px 12px', borderRadius: '20px', border: '1px solid rgba(196,159,87,0.25)', fontFamily: 'var(--font-btn)', cursor: 'pointer' }}>
                     {tag}
                   </span>
                 ))}
@@ -426,7 +426,7 @@ export default function MyMoodboard({ onBack, wishlistItems = [], toggleWishlist
 
       {/* ── TOAST ── */}
       {toast && (
-        <div style={{ position: 'fixed', bottom: 24, left: '50%', transform: 'translateX(-50%)', background: 'var(--sidebar-bg)', color: 'var(--text-white)', padding: '10px 24px', borderRadius: 'var(--radius-sm)', fontFamily: 'var(--font-btn)', fontSize: '0.82rem', zIndex: 2000, boxShadow: 'var(--shadow-md)' }}>
+        <div className="noor-toast" style={{ position: 'fixed', bottom: 24, left: '50%', transform: 'translateX(-50%)', padding: '10px 24px', borderRadius: 'var(--radius-sm)', fontFamily: 'var(--font-btn)', fontSize: '0.82rem', zIndex: 2000, boxShadow: 'var(--shadow-md)' }}>
           {toast}
         </div>
       )}

@@ -102,10 +102,10 @@ export default function BookingDetails({ onBack, onNavigate, bookingStatus = 4 }
       </div>
 
       {cancelled && (
-        <div style={{ background: 'linear-gradient(135deg, #e74c3c, #c0392b)', borderRadius: 'var(--radius-md)', padding: '14px 20px', marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <span style={{ color: 'white', fontSize: '1.2rem' }}>✕</span>
+        <div style={{ background: `linear-gradient(135deg, var(--danger), #c0392b)`, borderRadius: 'var(--radius-md)', padding: '14px 20px', marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <span style={{ color: 'var(--text-white)', fontSize: '1.2rem' }}>✕</span>
           <div>
-            <strong style={{ color: 'white', fontSize: '0.9rem', fontFamily: 'var(--font-heading)' }}>Booking Cancelled</strong>
+            <strong style={{ color: 'var(--text-white)', fontSize: '0.9rem', fontFamily: 'var(--font-heading)' }}>Booking Cancelled</strong>
             <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: '0.78rem', margin: 0 }}>This booking has been cancelled. Refund will be processed within 5-7 business days.</p>
           </div>
         </div>
@@ -127,7 +127,7 @@ export default function BookingDetails({ onBack, onNavigate, bookingStatus = 4 }
                   alt="Poonam Rawat"
                   style={{ width: '100px', height: '100px', borderRadius: 'var(--radius-md)', objectFit: 'cover', border: '2px solid rgba(196,159,87,0.25)' }}
                 />
-                <span style={{ position: 'absolute', bottom: '-8px', left: '50%', transform: 'translateX(-50%)', background: '#2ecc71', color: 'var(--text-white)', fontSize: '0.65rem', fontWeight: 700, padding: '2px 10px', borderRadius: '20px', whiteSpace: 'nowrap', fontFamily: 'var(--font-btn)' }}>
+                <span style={{ position: 'absolute', bottom: '-8px', left: '50%', transform: 'translateX(-50%)', background: 'var(--success)', color: 'var(--text-white)', fontSize: '0.65rem', fontWeight: 700, padding: '2px 10px', borderRadius: '20px', whiteSpace: 'nowrap', fontFamily: 'var(--font-btn)' }}>
                   ✓ Confirmed
                 </span>
               </div>
@@ -184,8 +184,8 @@ export default function BookingDetails({ onBack, onNavigate, bookingStatus = 4 }
                 <div key={i} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', zIndex: 1, flex: 1 }}>
                   <div style={{
                     width: '32px', height: '32px', borderRadius: '50%',
-                    background: step.done ? '#2ecc71' : 'var(--card-bg)',
-                    border: step.done ? '2px solid #2ecc71' : '2px solid var(--card-border)',
+                    background: step.done ? 'var(--success)' : 'var(--card-bg)',
+                    border: step.done ? '2px solid var(--success)' : '2px solid var(--card-border)',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                     color: step.done ? 'var(--text-white)' : 'var(--text-muted)',
                     fontSize: '0.75rem', fontWeight: 700,
@@ -236,7 +236,7 @@ export default function BookingDetails({ onBack, onNavigate, bookingStatus = 4 }
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                   {included.map(item => (
                     <div key={item} style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '0.82rem', color: 'var(--text-dark)' }}>
-                      <span style={{ width: '20px', height: '20px', borderRadius: '50%', background: 'rgba(46,204,113,0.12)', border: '1.5px solid #2ecc71', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#2ecc71', fontSize: '0.65rem', flexShrink: 0 }}>✓</span>
+                      <span style={{ width: '20px', height: '20px', borderRadius: '50%', background: 'rgba(46,204,113,0.12)', border: '1.5px solid var(--success)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--success)', fontSize: '0.65rem', flexShrink: 0 }}>✓</span>
                       {item}
                     </div>
                   ))}

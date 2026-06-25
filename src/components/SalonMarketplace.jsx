@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { MapPin, DollarSign, Filter, Sparkles, Star, Search } from 'lucide-react';
 import { SalonPreview, IMAGES } from '../assets/illustrations';
 import { fadeInUp, staggerContainer } from '../animations';
-import { askOpenRouter } from '../services/aiService';
+import { askOpenRouter, hasApiKey, ensureApiKey } from '../services/aiService';
 
 const salonImages = [IMAGES.salon1, IMAGES.salon2, IMAGES.salon3, IMAGES.salon4, IMAGES.salon5, IMAGES.salon6];
 
@@ -41,9 +41,10 @@ export default function SalonMarketplace() {
 
   const handleMoodboardSubmit = async (e) => {
     e.preventDefault();
-    setIsScrapingMoodboard(true);
-    
-    const prompt = `Act as an expert Pinterest moodboard visual analyzer for Indian bridal beauty. Analyze the moodboard inspiration.
+    ensureApiKey(() => {
+      setIsScrapingMoodboard(true);
+
+      const prompt = `Act as an expert Pinterest moodboard visual analyzer for Indian bridal beauty. Analyze the moodboard inspiration.
     Return a valid JSON object matching this schema exactly (do not include any conversational text or markdown formatting code blocks, just pure JSON):
     {
       "makeupStyle": "descriptive makeup style name and brief detail",
@@ -60,40 +61,43 @@ export default function SalonMarketplace() {
     - Kaya Clinic & Salon (Karol Bagh)
     - Geetanjali Salon (Noida)`;
 
-    const systemInstruction = "You are a professional Pinterest bridal beauty analyzer. You only respond with JSON matching the requested structure.";
+      const systemInstruction = "You are a professional Pinterest bridal beauty analyzer. You only respond with JSON matching the requested structure.";
 
-    try {
-      const response = await askOpenRouter(prompt, systemInstruction);
-      const cleanedResponse = response.replace(/```json/g, "").replace(/```/g, "").trim();
-      const resultObj = JSON.parse(cleanedResponse);
+      (async () => {
+        try {
+          const response = await askOpenRouter(prompt, systemInstruction);
+          const cleanedResponse = response.replace(/```json/g, "").replace(/```/g, "").trim();
+          const resultObj = JSON.parse(cleanedResponse);
 
-      setMoodboardResult({
-        makeupStyle: resultObj.makeupStyle || 'Glam Dewy with subtle Winged Liner',
-        hairstyle: resultObj.hairstyle || 'Classic Sleek Low Bun with gajra decorations',
-        palette: Array.isArray(resultObj.palette) && resultObj.palette.length === 4 ? resultObj.palette : ['#B76E79', '#D4AF37', '#7B3F00', '#F8E8EE'],
-        matchingSalons: Array.isArray(resultObj.matchingSalons) ? resultObj.matchingSalons : ['Gitanjali Salon (GK-II)', 'Ambika Pillai Studio (South Extension)']
-      });
-      if (Array.isArray(resultObj.matchingSalons) && resultObj.matchingSalons.length > 0) {
-        const match = resultObj.matchingSalons[0];
-        if (match.includes('GK-II')) setSelectedLoc('GK-II');
-        else if (match.includes('South Extension')) setSelectedLoc('South Extension');
-        else if (match.includes('Rajouri Garden')) setSelectedLoc('Rajouri Garden');
-        else if (match.includes('Gurgaon')) setSelectedLoc('Gurgaon');
-        else if (match.includes('Karol Bagh')) setSelectedLoc('Karol Bagh');
-        else if (match.includes('Noida')) setSelectedLoc('Noida');
-      }
-    } catch (err) {
-      console.error("Failed to scrape moodboard with AI:", err);
-      setMoodboardResult({
-        makeupStyle: 'Glam Dewy with subtle Winged Liner',
-        hairstyle: 'Classic Sleek Low Bun with gajra decorations',
-        palette: ['#B76E79', '#D4AF37', '#7B3F00', '#F8E8EE'],
-        matchingSalons: ['Gitanjali Salon (GK-II)', 'Ambika Pillai Studio (South Extension)']
-      });
-      setSelectedLoc('GK-II');
-    } finally {
-      setIsScrapingMoodboard(false);
-    }
+          setMoodboardResult({
+            makeupStyle: resultObj.makeupStyle || 'Glam Dewy with subtle Winged Liner',
+            hairstyle: resultObj.hairstyle || 'Classic Sleek Low Bun with gajra decorations',
+            palette: Array.isArray(resultObj.palette) && resultObj.palette.length === 4 ? resultObj.palette : ['#B76E79', '#D4AF37', '#7B3F00', '#F8E8EE'],
+            matchingSalons: Array.isArray(resultObj.matchingSalons) ? resultObj.matchingSalons : ['Gitanjali Salon (GK-II)', 'Ambika Pillai Studio (South Extension)']
+          });
+          if (Array.isArray(resultObj.matchingSalons) && resultObj.matchingSalons.length > 0) {
+            const match = resultObj.matchingSalons[0];
+            if (match.includes('GK-II')) setSelectedLoc('GK-II');
+            else if (match.includes('South Extension')) setSelectedLoc('South Extension');
+            else if (match.includes('Rajouri Garden')) setSelectedLoc('Rajouri Garden');
+            else if (match.includes('Gurgaon')) setSelectedLoc('Gurgaon');
+            else if (match.includes('Karol Bagh')) setSelectedLoc('Karol Bagh');
+            else if (match.includes('Noida')) setSelectedLoc('Noida');
+          }
+        } catch (err) {
+          console.error("Failed to scrape moodboard with AI:", err);
+          setMoodboardResult({
+            makeupStyle: 'Glam Dewy with subtle Winged Liner',
+            hairstyle: 'Classic Sleek Low Bun with gajra decorations',
+            palette: ['#B76E79', '#D4AF37', '#7B3F00', '#F8E8EE'],
+            matchingSalons: ['Gitanjali Salon (GK-II)', 'Ambika Pillai Studio (South Extension)']
+          });
+          setSelectedLoc('GK-II');
+        } finally {
+          setIsScrapingMoodboard(false);
+        }
+      })();
+    });
   };
 
   const handleLookFileUpload = (e) => {
@@ -111,9 +115,10 @@ export default function SalonMarketplace() {
   const handleLookRatingSubmit = async (e) => {
     e.preventDefault();
     if (!lookFile) return;
-    setIsRatingLook(true);
+    ensureApiKey(() => {
+      setIsRatingLook(true);
 
-    const prompt = `Act as an expert bridal beauty rating model. Evaluate a trial makeup look photo.
+      const prompt = `Act as an expert bridal beauty rating model. Evaluate a trial makeup look photo.
     Return a valid JSON object matching this schema exactly (do not include any conversational text or markdown formatting code blocks, just pure JSON):
     {
       "elegance": 92,
@@ -123,36 +128,39 @@ export default function SalonMarketplace() {
       "verdict": "Detailed assessment of the makeup trial look, skin compatibility, and advice for photo shoot lighting."
     }`;
 
-    const systemInstruction = "You are an AI bridal makeup look evaluator. You return only JSON scores and verdicts.";
+      const systemInstruction = "You are an AI bridal makeup look evaluator. You return only JSON scores and verdicts.";
 
-    try {
-      const response = await askOpenRouter(prompt, systemInstruction);
-      const cleanedResponse = response.replace(/```json/g, "").replace(/```/g, "").trim();
-      const resultObj = JSON.parse(cleanedResponse);
+      (async () => {
+        try {
+          const response = await askOpenRouter(prompt, systemInstruction);
+          const cleanedResponse = response.replace(/```json/g, "").replace(/```/g, "").trim();
+          const resultObj = JSON.parse(cleanedResponse);
 
-      setTimeout(() => {
-        setLookRatingResult({
-          elegance: resultObj.elegance || 90,
-          balance: resultObj.balance || 85,
-          harmony: resultObj.harmony || 92,
-          photography: resultObj.photography || 88,
-          verdict: resultObj.verdict || 'Good color balancing.'
-        });
-        setIsRatingLook(false);
-      }, 3000);
-    } catch (err) {
-      console.error("Failed to rate look with AI:", err);
-      setTimeout(() => {
-        setLookRatingResult({
-          elegance: 92,
-          balance: 88,
-          harmony: 95,
-          photography: 90,
-          verdict: 'Excellent color harmony matching your skin profile. Highlights are well-positioned under high photography lighting.'
-        });
-        setIsRatingLook(false);
-      }, 3000);
-    }
+          setTimeout(() => {
+            setLookRatingResult({
+              elegance: resultObj.elegance || 90,
+              balance: resultObj.balance || 85,
+              harmony: resultObj.harmony || 92,
+              photography: resultObj.photography || 88,
+              verdict: resultObj.verdict || 'Good color balancing.'
+            });
+            setIsRatingLook(false);
+          }, 3000);
+        } catch (err) {
+          console.error("Failed to rate look with AI:", err);
+          setTimeout(() => {
+            setLookRatingResult({
+              elegance: 92,
+              balance: 88,
+              harmony: 95,
+              photography: 90,
+              verdict: 'Excellent color harmony matching your skin profile. Highlights are well-positioned under high photography lighting.'
+            });
+            setIsRatingLook(false);
+          }, 3000);
+        }
+      })();
+    });
   };
 
   const handleConfirmBooking = () => {
@@ -192,7 +200,7 @@ export default function SalonMarketplace() {
       </div>
 
       {/* Area Selector */}
-      <motion.div className="glass-panel" style={{ padding: '20px', marginBottom: '30px', background: '#FFFDF9' }} variants={fadeInUp}>
+      <motion.div className="glass-panel" style={{ padding: '20px', marginBottom: '30px', background: 'var(--card-bg)' }} variants={fadeInUp}>
         <h4 style={{ fontSize: '1rem', color: 'var(--luxury-accent)', marginBottom: '14px', display: 'flex', alignItems: 'center', gap: '8px' }}>
           <MapPin size={16} style={{ color: 'var(--primary)' }} /> Interactive Area Selector (NCR Hubs)
         </h4>
@@ -295,7 +303,7 @@ export default function SalonMarketplace() {
               </motion.button>
             </form>
             {lookRatingResult && (
-              <motion.div style={{ marginTop: '14px', background: '#FFFDF9', padding: '12px', borderRadius: '8px', border: '1px solid rgba(183, 110, 121, 0.2)' }} initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+              <motion.div style={{ marginTop: '14px', background: 'var(--card-bg)', padding: '12px', borderRadius: '8px', border: '1px solid var(--card-border)' }} initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: 600, fontSize: '0.8rem', borderBottom: '1px solid var(--card-border)', paddingBottom: '6px', marginBottom: '6px' }}>
                   <span>Elegance: {lookRatingResult.elegance}%</span>
                   <span>Harmony: {lookRatingResult.harmony}%</span>
@@ -358,7 +366,7 @@ export default function SalonMarketplace() {
         {selectedSalon && (
           <>
             <motion.div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.4)', backdropFilter: 'blur(5px)', zIndex: 1000 }} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setSelectedSalon(null)} />
-            <motion.div className="glass-panel animate-float-up" style={{ position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: '450px', background: '#FFFDF9', padding: '30px', zIndex: 1001 }}
+            <motion.div className="glass-panel animate-float-up" style={{ position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: '450px', background: 'var(--card-bg)', padding: '30px', zIndex: 1001 }}
               initial={{ opacity: 0, scale: 0.9, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.9, y: 20 }} transition={{ type: 'spring', damping: 20, stiffness: 200 }}>
               <h3 style={{ fontSize: '1.4rem', color: 'var(--luxury-accent)', marginBottom: '10px' }}>Confirm Trial Booking</h3>
               <p style={{ fontSize: '0.85rem', color: 'var(--text-light)', marginBottom: '20px' }}>Confirm your booking consultation slot at <strong>{selectedSalon.name} ({selectedSalon.location})</strong>.</p>
@@ -387,10 +395,10 @@ export default function SalonMarketplace() {
         {showSuccessModal && confirmedBookingInfo && (
           <>
             <motion.div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(8px)', zIndex: 1010 }} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setShowSuccessModal(false)} />
-            <motion.div className="glass-panel animate-float-up" style={{ position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: '450px', background: 'linear-gradient(135deg, #1f1418 0%, #15090b 100%)', border: '1px solid rgba(196, 159, 87, 0.3)', color: '#ffffff', padding: '35px', zIndex: 1011, borderRadius: '24px', textAlign: 'center', boxShadow: '0 25px 50px rgba(0,0,0,0.5)' }}
+            <motion.div className="glass-panel animate-float-up" style={{ position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: '450px', background: 'linear-gradient(135deg, #1f1418 0%, #15090b 100%)', border: '1px solid rgba(196, 159, 87, 0.3)', color: 'var(--text-white)', padding: '35px', zIndex: 1011, borderRadius: '24px', textAlign: 'center', boxShadow: '0 25px 50px rgba(0,0,0,0.5)' }}
               initial={{ opacity: 0, scale: 0.9, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.9, y: 20 }} transition={{ type: 'spring', damping: 20, stiffness: 200 }}>
-              <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
-                <div style={{ width: '80px', height: '80px', borderRadius: '50%', background: 'rgba(46, 204, 113, 0.1)', border: '2px solid #2ecc71', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#2ecc71', fontSize: '2.5rem' }}>
+                <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
+                <div style={{ width: '80px', height: '80px', borderRadius: '50%', background: 'rgba(46, 204, 113, 0.08)', border: `2px solid var(--success)`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--success)', fontSize: '2.5rem' }}>
                   ✓
                 </div>
               </div>

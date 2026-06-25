@@ -1,8 +1,11 @@
 import { useState, useEffect } from 'react';
-import { ChevronDown, ArrowLeft } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { ChevronDown, ArrowLeft, Key, Eye, EyeOff, Check, ExternalLink, Trash2 } from 'lucide-react';
+import { saveApiKey, hasApiKey } from '../services/aiService';
 
 const SETTING_TABS = [
   { id: 'account', label: 'Account Settings', icon: '👤' },
+  { id: 'apikey', label: 'API Key', icon: '🔑' },
   { id: 'notifications', label: 'Notifications', icon: '🔔' },
   { id: 'privacy', label: 'Privacy & Security', icon: '🛡️' },
   { id: 'payment', label: 'Payment & Payouts', icon: '💳' },
@@ -161,6 +164,10 @@ export default function SettingsPage({ onBack, darkMode, toggleDarkMode, onLogou
   useEffect(() => { localStorage.setItem('noor_interests', JSON.stringify(interests)); }, [interests]);
 
   const [tfaMethod, setTfaMethod] = useState(() => loadJSON('noor_2fa_method', 'SMS'));
+
+  const [apiKeyInputVal, setApiKeyInputVal] = useState(() => localStorage.getItem('noor_api_key') || '');
+  const [showApiKey, setShowApiKey] = useState(false);
+  const [apiKeyStatus, setApiKeyStatus] = useState('');
 
   const saveProfileSettings = (updatedFields = {}) => {
     const existing = loadJSON(LS_PROFILE, {});
@@ -442,6 +449,93 @@ export default function SettingsPage({ onBack, darkMode, toggleDarkMode, onLogou
     </>
   );
 
+  const renderApiKey = () => {
+    const currentKey = localStorage.getItem('noor_api_key') || '';
+
+    const handleSave = () => {
+      const trimmed = apiKeyInputVal.trim();
+      if (!trimmed) { setApiKeyStatus('error'); return; }
+      saveApiKey(trimmed);
+      setApiKeyStatus('saved');
+      setTimeout(() => setApiKeyStatus(''), 2000);
+    };
+
+    const handleRemove = () => {
+      localStorage.removeItem('noor_api_key');
+      setApiKeyInputVal('');
+      setApiKeyStatus('removed');
+      setTimeout(() => setApiKeyStatus(''), 2000);
+    };
+
+    return (
+      <div style={{ background: 'var(--card-bg)', border: '1px solid rgba(196,159,87,0.18)', borderRadius: 'var(--radius-lg)', padding: '28px', boxShadow: 'var(--shadow-sm)' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
+          <h3 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.05rem', fontWeight: 700, color: 'var(--sidebar-bg)', margin: 0 }}>
+            <Key size={16} style={{ color: 'var(--gold-accent)', display: 'inline', marginRight: 6 }} />
+            OpenRouter API Key
+          </h3>
+          {currentKey && (
+            <span style={{ fontSize: '0.65rem', padding: '3px 10px', borderRadius: 20, background: 'rgba(46,204,113,0.1)', color: '#2ecc71', fontWeight: 600, border: '1px solid rgba(46,204,113,0.2)' }}>
+              <Check size={10} style={{ display: 'inline' }} /> Connected
+            </span>
+          )}
+        </div>
+        <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: '20px' }}>
+          Enter your OpenRouter API key to enable all AI features. One key works across the entire platform.
+        </p>
+
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, background: 'var(--card-bg-elevated)', border: '1px solid var(--card-border)', borderRadius: 'var(--radius-md)', padding: '4px 4px 4px 14px', marginBottom: 12 }}>
+          <input
+            type={showApiKey ? 'text' : 'password'}
+            value={apiKeyInputVal}
+            onChange={e => setApiKeyInputVal(e.target.value)}
+            placeholder="sk-or-v1-..."
+            style={{ flex: 1, border: 'none', background: 'transparent', color: 'var(--text-dark)', fontSize: '0.82rem', fontFamily: 'var(--font-btn)', outline: 'none', padding: '10px 0' }}
+          />
+          <button onClick={() => setShowApiKey(!showApiKey)} style={{ background: 'transparent', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', padding: '6px', borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            {showApiKey ? <EyeOff size={16} /> : <Eye size={16} />}
+          </button>
+        </div>
+
+        <div style={{ display: 'flex', gap: 10 }}>
+          <motion.button
+            onClick={handleSave}
+            style={{ flex: 1, background: 'var(--maroon-btn)', color: 'var(--text-white)', border: 'none', borderRadius: 'var(--radius-sm)', padding: '10px 20px', fontFamily: 'var(--font-btn)', fontWeight: 700, fontSize: '0.82rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}
+            whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.98 }}
+          >
+            {apiKeyStatus === 'saved' ? '✓ Saved!' : <><Key size={14} /> Save API Key</>}
+          </motion.button>
+          {currentKey && (
+            <motion.button
+              onClick={handleRemove}
+              style={{ background: 'rgba(231,76,60,0.08)', color: '#e74c3c', border: '1px solid rgba(231,76,60,0.2)', borderRadius: 'var(--radius-sm)', padding: '10px 16px', fontFamily: 'var(--font-btn)', fontWeight: 600, fontSize: '0.82rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6 }}
+              whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.98 }}
+            >
+              <Trash2 size={14} /> Remove
+            </motion.button>
+          )}
+        </div>
+
+        {apiKeyStatus === 'error' && (
+          <div style={{ marginTop: 10, fontSize: '0.75rem', color: '#e74c3c' }}>Please enter a valid API key.</div>
+        )}
+        {apiKeyStatus === 'removed' && (
+          <div style={{ marginTop: 10, fontSize: '0.75rem', color: '#e74c3c' }}>API key removed. AI features will prompt for a key when used.</div>
+        )}
+
+        <div style={{ marginTop: 16, padding: '12px 16px', background: 'rgba(196,159,87,0.06)', borderRadius: 'var(--radius-sm)', border: '1px solid rgba(196,159,87,0.15)', display: 'flex', alignItems: 'center', gap: 10 }}>
+          <ExternalLink size={14} style={{ color: 'var(--gold-accent)', flexShrink: 0 }} />
+          <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', lineHeight: 1.4 }}>
+            Don't have an API key?{' '}
+            <a href="https://openrouter.ai/keys" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--gold-accent)', fontWeight: 600 }}>
+              Get your free OpenRouter key →
+            </a>
+          </span>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div className="animate-fade-in" style={{ padding: '0 0 40px 0' }}>
       {/* Header */}
@@ -652,6 +746,8 @@ export default function SettingsPage({ onBack, darkMode, toggleDarkMode, onLogou
             </div>
           )}
 
+          {activeTab === 'account' && renderNotifications()}
+          {activeTab === 'apikey' && renderApiKey()}
           {activeTab === 'notifications' && renderNotifications()}
           {activeTab === 'privacy' && renderPrivacy()}
           {activeTab === 'payment' && renderPayment()}
@@ -870,7 +966,7 @@ export default function SettingsPage({ onBack, darkMode, toggleDarkMode, onLogou
                     saveProfileSettings();
                     setActivePrefModal(null);
                     showToast('✅ Wedding preferences saved!');
-                  }} style={{ background: 'var(--maroon-btn)', color: '#FFF', border: 'none', borderRadius: 'var(--radius-sm)', padding: '10px 24px', fontWeight: 700, fontSize: '0.82rem', cursor: 'pointer' }}>Save Settings</button>
+                  }} style={{ background: 'var(--maroon-btn)', color: 'var(--text-white)', border: 'none', borderRadius: 'var(--radius-sm)', padding: '10px 24px', fontWeight: 700, fontSize: '0.82rem', cursor: 'pointer' }}>Save Settings</button>
                 </div>
               </div>
             )}
@@ -914,7 +1010,7 @@ export default function SettingsPage({ onBack, darkMode, toggleDarkMode, onLogou
                     saveProfileSettings();
                     setActivePrefModal(null);
                     showToast('✅ Beauty preferences saved!');
-                  }} style={{ background: 'var(--maroon-btn)', color: '#FFF', border: 'none', borderRadius: 'var(--radius-sm)', padding: '10px 24px', fontWeight: 700, fontSize: '0.82rem', cursor: 'pointer' }}>Save Settings</button>
+                  }} style={{ background: 'var(--maroon-btn)', color: 'var(--text-white)', border: 'none', borderRadius: 'var(--radius-sm)', padding: '10px 24px', fontWeight: 700, fontSize: '0.82rem', cursor: 'pointer' }}>Save Settings</button>
                 </div>
               </div>
             )}
@@ -953,7 +1049,7 @@ export default function SettingsPage({ onBack, darkMode, toggleDarkMode, onLogou
                         setEditingAddressId(null);
                         setAddressLabelInput('');
                         setAddressValueInput('');
-                      }} style={{ padding: '6px 14px', border: 'none', borderRadius: '4px', background: 'var(--maroon-btn)', color: '#FFF', fontSize: '0.75rem', fontWeight: 700, cursor: 'pointer' }}>Save</button>
+                      }} style={{ padding: '6px 14px', border: 'none', borderRadius: '4px', background: 'var(--maroon-btn)', color: 'var(--text-white)', fontSize: '0.75rem', fontWeight: 700, cursor: 'pointer' }}>Save</button>
                     </div>
                   </div>
                 ) : (
@@ -989,7 +1085,7 @@ export default function SettingsPage({ onBack, darkMode, toggleDarkMode, onLogou
                   </>
                 )}
                 <div style={{ textAlign: 'right', marginTop: '8px' }}>
-                  <button onClick={() => setActivePrefModal(null)} style={{ background: 'var(--maroon-btn)', color: '#FFF', border: 'none', borderRadius: 'var(--radius-sm)', padding: '10px 24px', fontWeight: 700, fontSize: '0.82rem', cursor: 'pointer' }}>Done</button>
+                  <button onClick={() => setActivePrefModal(null)} style={{ background: 'var(--maroon-btn)', color: 'var(--text-white)', border: 'none', borderRadius: 'var(--radius-sm)', padding: '10px 24px', fontWeight: 700, fontSize: '0.82rem', cursor: 'pointer' }}>Done</button>
                 </div>
               </div>
             )}
@@ -1023,7 +1119,7 @@ export default function SettingsPage({ onBack, darkMode, toggleDarkMode, onLogou
                   )}
                 </div>
                 <div style={{ textAlign: 'right', marginTop: '8px' }}>
-                  <button onClick={() => setActivePrefModal(null)} style={{ background: 'var(--maroon-btn)', color: '#FFF', border: 'none', borderRadius: 'var(--radius-sm)', padding: '10px 24px', fontWeight: 700, fontSize: '0.82rem', cursor: 'pointer' }}>Close</button>
+                  <button onClick={() => setActivePrefModal(null)} style={{ background: 'var(--maroon-btn)', color: 'var(--text-white)', border: 'none', borderRadius: 'var(--radius-sm)', padding: '10px 24px', fontWeight: 700, fontSize: '0.82rem', cursor: 'pointer' }}>Close</button>
                 </div>
               </div>
             )}
@@ -1057,7 +1153,7 @@ export default function SettingsPage({ onBack, darkMode, toggleDarkMode, onLogou
                   ))}
                 </div>
                 <div style={{ textAlign: 'right', marginTop: '8px' }}>
-                  <button onClick={() => { setActivePrefModal(null); showToast('✅ Communication preferences updated!'); }} style={{ background: 'var(--maroon-btn)', color: '#FFF', border: 'none', borderRadius: 'var(--radius-sm)', padding: '10px 24px', fontWeight: 700, fontSize: '0.82rem', cursor: 'pointer' }}>Save &amp; Close</button>
+                  <button onClick={() => { setActivePrefModal(null); showToast('✅ Communication preferences updated!'); }} style={{ background: 'var(--maroon-btn)', color: 'var(--text-white)', border: 'none', borderRadius: 'var(--radius-sm)', padding: '10px 24px', fontWeight: 700, fontSize: '0.82rem', cursor: 'pointer' }}>Save &amp; Close</button>
                 </div>
               </div>
             )}
@@ -1101,7 +1197,7 @@ export default function SettingsPage({ onBack, darkMode, toggleDarkMode, onLogou
                   })}
                 </div>
                 <div style={{ textAlign: 'right', marginTop: '8px' }}>
-                  <button onClick={() => { setActivePrefModal(null); showToast('✅ Interests updated!'); }} style={{ background: 'var(--maroon-btn)', color: '#FFF', border: 'none', borderRadius: 'var(--radius-sm)', padding: '10px 24px', fontWeight: 700, fontSize: '0.82rem', cursor: 'pointer' }}>Save Interests</button>
+                  <button onClick={() => { setActivePrefModal(null); showToast('✅ Interests updated!'); }} style={{ background: 'var(--maroon-btn)', color: 'var(--text-white)', border: 'none', borderRadius: 'var(--radius-sm)', padding: '10px 24px', fontWeight: 700, fontSize: '0.82rem', cursor: 'pointer' }}>Save Interests</button>
                 </div>
               </div>
             )}
@@ -1116,7 +1212,7 @@ export default function SettingsPage({ onBack, darkMode, toggleDarkMode, onLogou
               <div style={{ textAlign: 'center', padding: '20px 0' }}>
                 <span style={{ fontSize: '2.5rem', display: 'block', marginBottom: '12px' }}>⚙️</span>
                 <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>{activePrefModal} options and preferences will be manageable here soon.</p>
-                <button onClick={() => setActivePrefModal(null)} style={{ marginTop: '16px', background: 'var(--maroon-btn)', color: '#FFF', border: 'none', borderRadius: 'var(--radius-sm)', padding: '8px 20px', fontWeight: 700, fontSize: '0.78rem', cursor: 'pointer' }}>Close</button>
+                <button onClick={() => setActivePrefModal(null)} style={{ marginTop: '16px', background: 'var(--maroon-btn)', color: 'var(--text-white)', border: 'none', borderRadius: 'var(--radius-sm)', padding: '8px 20px', fontWeight: 700, fontSize: '0.78rem', cursor: 'pointer' }}>Close</button>
               </div>
             )}
           </div>
@@ -1259,7 +1355,7 @@ export default function SettingsPage({ onBack, darkMode, toggleDarkMode, onLogou
 
       {/* Toast */}
       {toast && (
-        <div style={{ position: 'fixed', bottom: 24, left: '50%', transform: 'translateX(-50%)', background: 'var(--sidebar-bg)', color: 'var(--text-white)', padding: '10px 24px', borderRadius: 'var(--radius-sm)', fontFamily: 'var(--font-btn)', fontSize: '0.82rem', zIndex: 2000, boxShadow: 'var(--shadow-md)' }}>
+        <div className="noor-toast" style={{ position: 'fixed', bottom: 24, left: '50%', transform: 'translateX(-50%)', padding: '10px 24px', borderRadius: 'var(--radius-sm)', fontFamily: 'var(--font-btn)', fontSize: '0.82rem', zIndex: 2000, boxShadow: 'var(--shadow-md)' }}>
           {toast}
         </div>
       )}

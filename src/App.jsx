@@ -1,20 +1,22 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, lazy, Suspense } from 'react';
 import { 
   LayoutDashboard, Sparkles, Scissors, Calendar, Image as ImageIcon, Heart, 
   MessageCircle, Star, User, Settings, Bell, ChevronDown, Search, Send, 
   CreditCard, Users, UserCheck, Headset, ArrowRight, ArrowLeft, Moon, Sun,
-  MapPin, Pencil, Check, Circle, Crown, ClipboardCheck, Wallet
+  MapPin, Pencil, Check, Circle, Crown, ClipboardCheck, Wallet, Key
 } from 'lucide-react';
-import BridalPlanner from './components/BridalPlanner';
-import ArtistsSalons from './components/ArtistsSalons';
-import BookingDetails from './components/BookingDetails';
-import MyMoodboard from './components/MyMoodboard';
-import Messages from './components/Messages';
-import WalletOffers from './components/WalletOffers';
-import SettingsPage from './components/SettingsPage';
-import AiToolsContainer from './components/AiToolsContainer';
-import LoginPage from './components/LoginPage';
-import SalonMarketplace from './components/SalonMarketplace';
+const BridalPlanner = lazy(() => import('./components/BridalPlanner'));
+const ArtistsSalons = lazy(() => import('./components/ArtistsSalons'));
+const BookingDetails = lazy(() => import('./components/BookingDetails'));
+const MyMoodboard = lazy(() => import('./components/MyMoodboard'));
+const Messages = lazy(() => import('./components/Messages'));
+const WalletOffers = lazy(() => import('./components/WalletOffers'));
+const SettingsPage = lazy(() => import('./components/SettingsPage'));
+const AiToolsContainer = lazy(() => import('./components/AiToolsContainer'));
+const LoginPage = lazy(() => import('./components/LoginPage'));
+const SalonMarketplace = lazy(() => import('./components/SalonMarketplace'));
+const ApiKeyModal = lazy(() => import('./components/ApiKeyModal'));
+import { setApiKeyHandler } from './services/aiService';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(() => {
@@ -147,6 +149,13 @@ function App() {
     setNotifList(prev => prev.map(n => ({ ...n, read: true })));
   };
 
+  const [showApiKeyModal, setShowApiKeyModal] = useState(false);
+
+  useEffect(() => {
+    setApiKeyHandler(() => setShowApiKeyModal(true));
+    return () => setApiKeyHandler(null);
+  }, []);
+
   const [searchQuery, setSearchQuery] = useState('');
   const [showSearchResults, setShowSearchResults] = useState(false);
   const [wishlistTab, setWishlistTab] = useState('All');
@@ -201,8 +210,8 @@ function App() {
   const heroSlides = [
     { 
       id: 0, 
-      bg: 'linear-gradient(135deg, #1a0510 0%, #3b0e1c 40%, #6b1a30 75%, #8b2040 100%)',
-      shimmer: 'radial-gradient(ellipse at 20% 50%, rgba(196,159,87,0.18) 0%, transparent 60%)',
+      bg: 'linear-gradient(120deg, #3d0a20 0%, #6b1535 22%, #a8204e 50%, #c4356a 72%, #7a1040 100%)',
+      shimmer: 'radial-gradient(ellipse at 15% 60%, rgba(240,180,100,0.28) 0%, transparent 50%), radial-gradient(ellipse at 75% 20%, rgba(255,80,120,0.15) 0%, transparent 45%)',
       tag: '✨ AI-Powered Bridal Platform',
       badges: [
         { label: 'Smart AI', sub: 'Personalised for You', icon: '🤖' },
@@ -304,9 +313,15 @@ function App() {
     setHeroIdx(idx);
     restartHeroTimer();
   };
+  const readinessRingTrack = darkMode ? '#2a1e22' : '#F8E8EE';
+  const readinessRingProgress = darkMode ? 'var(--gold-accent)' : 'var(--sidebar-bg)';
 
   if (!isLoggedIn) {
-    return <LoginPage onLoginSuccess={() => setIsLoggedIn(true)} />;
+    return (
+      <Suspense fallback={<div className="page-loading">Loading...</div>}>
+        <LoginPage onLoginSuccess={() => setIsLoggedIn(true)} />
+      </Suspense>
+    );
   }
 
   return (
@@ -317,7 +332,7 @@ function App() {
           {/* Brand Logo Header */}
           <div className="sidebar-logo" style={{ padding: '24px 16px 12px 16px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             {/* Custom Premium Logo Symbol */}
-            <svg width="68" height="68" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ marginBottom: '6px' }}>
+            <svg width="68" height="68" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ marginBottom: '0px' }}>
               {/* Crown back glow */}
               <path d="M 36 28 Q 42 26 50 18 Q 58 26 64 28 C 62 33 38 33 36 28 Z" fill="#c49f57" opacity="0.15" />
               {/* Crown outline */}
@@ -350,7 +365,7 @@ function App() {
               <text x="50" y="66" font-family="'Playfair Display', Georgia, serif" font-size="22" font-weight="bold" fill="#c49f57" text-anchor="middle">N</text>
             </svg>
 
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '4px 0' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0px 0' }}>
               <span className="sidebar-logo-text" style={{ letterSpacing: '2px', fontFamily: 'var(--font-heading)', fontSize: '1.4rem', color: '#c49f57', fontWeight: 'bold' }}>NOOR-E-TAJ</span>
             </div>
 
@@ -506,6 +521,15 @@ function App() {
               )}
             </button>
 
+            <button
+              className="topbar-btn"
+              onClick={() => setShowApiKeyModal(true)}
+              title="API Key Settings"
+              style={{ color: showApiKeyModal ? 'var(--gold-accent)' : '' }}
+            >
+              <Key size={20} />
+            </button>
+
             <button 
               className="topbar-btn" 
               onClick={toggleDarkMode}
@@ -531,6 +555,7 @@ function App() {
 
         {/* Dynamic Pages router — scrollable content area */}
         <div className="main-scrollable">
+        <Suspense fallback={<div className="page-loading" style={{ textAlign: 'center', padding: '80px 20px', color: 'var(--text-muted)' }}>Loading page...</div>}>
 
         {/* TAB A: THE EXACT MOCKUP DASHBOARD PAGE */}
         {activeTab === 'dashboard' && (
@@ -710,8 +735,8 @@ function App() {
                 <div className="readiness-chart-sec">
                   <div className="readiness-ring">
                     <svg style={{ width: '100%', height: '100%', transform: 'rotate(-90deg)' }}>
-                      <circle cx="40" cy="40" r="34" style={{ fill: 'none', stroke: darkMode ? '#2a1e22' : '#F8E8EE', strokeWidth: '6' }}></circle>
-                      <circle cx="40" cy="40" r="34" style={{ fill: 'none', stroke: 'var(--sidebar-bg)', strokeWidth: '6', strokeDasharray: '213', strokeDashoffset: '30' }}></circle>
+                      <circle cx="40" cy="40" r="34" style={{ fill: 'none', stroke: readinessRingTrack, strokeWidth: '6' }}></circle>
+                      <circle cx="40" cy="40" r="34" style={{ fill: 'none', stroke: readinessRingProgress, strokeWidth: '6', strokeDasharray: '213', strokeDashoffset: '30' }}></circle>
                     </svg>
                     <div className="readiness-ring-content">
                       <div className="readiness-pct">86%</div>
@@ -731,8 +756,8 @@ function App() {
                           <span>{item.label}</span>
                         </div>
                         {item.done
-                          ? <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 16, height: 16, background: '#2ecc71', borderRadius: '50%', color: '#fff' }}><Check size={10} strokeWidth={3} /></span>
-                          : <span style={{ display: 'inline-flex', width: 16, height: 16, border: '1.5px solid #f39c12', borderRadius: '50%' }} />
+                          ? <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 16, height: 16, background: 'var(--success)', borderRadius: '50%', color: 'var(--text-white)' }}><Check size={10} strokeWidth={3} /></span>
+                          : <span style={{ display: 'inline-flex', width: 16, height: 16, border: '1.5px solid var(--warning)', borderRadius: '50%' }} />
                         }
                       </div>
                     ))}
@@ -745,12 +770,7 @@ function App() {
                   <h3 className="card-sec-title" style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '0.85rem' }}>
                     <Sparkles size={14} style={{ color: 'var(--gold-accent)' }} /> AI Recommended For You
                   </h3>
-                  <span 
-                    onClick={() => setActiveTab('marketplace')} 
-                    style={{ fontSize: '0.7rem', color: 'var(--maroon-btn)', cursor: 'pointer', textDecoration: 'underline' }}
-                  >
-                    View All
-                  </span>
+                  <span onClick={() => setActiveTab('marketplace')} className="db-view-all-link">View All</span>
                 </div>
 
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '8px', flex: 1 }}>
@@ -809,12 +829,7 @@ function App() {
                 <div>
                   <div className="card-sec-header" style={{ marginBottom: '8px' }}>
                     <h3 className="card-sec-title" style={{ fontSize: '0.85rem' }}>Upcoming Bookings</h3>
-                    <span 
-                      onClick={() => setActiveTab('bookings')} 
-                      style={{ fontSize: '0.7rem', color: 'var(--maroon-btn)', cursor: 'pointer', textDecoration: 'underline' }}
-                    >
-                      View All
-                    </span>
+                    <span onClick={() => setActiveTab('bookings')} className="db-view-all-link">View All</span>
                   </div>
 
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
@@ -827,7 +842,7 @@ function App() {
                         </div>
                         <div className="booking-item-time" style={{ textAlign: 'right', fontSize: '0.68rem' }}>
                           <strong style={{ display: 'block', color: 'var(--text-dark)' }}>{booking.date}</strong>
-                          <div style={{ color: booking.status === 'Confirmed' ? 'green' : 'orange', fontWeight: 600 }}>{booking.status}</div>
+                          <div style={{ color: booking.status === 'Confirmed' ? 'var(--success)' : 'var(--warning)', fontWeight: 600 }}>{booking.status}</div>
                         </div>
                       </div>
                     ))}
@@ -1090,57 +1105,57 @@ function App() {
 
           {/* WISHLIST PAGE */}
           {activeTab === 'wishlist' && (
-            <div className="animate-fade-in" style={{ padding: '0 0 40px 0' }}>
+            <div className="animate-fade-in wishlist-page" style={{ padding: '0 0 40px 0' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '24px' }}>
                 <div>
                   <button className="planner-back-btn" onClick={() => setActiveTab('dashboard')} style={{ marginBottom: '8px' }}>
                     <ArrowLeft size={16} /> Back to Dashboard
                   </button>
-                  <h1 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.9rem', color: 'var(--sidebar-bg)', fontWeight: 700, marginBottom: '4px' }}>
+                  <h1 className="wishlist-page__title" style={{ fontFamily: 'var(--font-heading)', fontSize: '1.9rem', color: 'var(--sidebar-bg)', fontWeight: 700, marginBottom: '4px' }}>
                     My Wishlist ❤️
                   </h1>
-                  <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
-                    Your saved artists and packages — <strong style={{ color: 'var(--maroon-btn)' }}>{wishlistItems.length} saved</strong>
+                  <p className="wishlist-page__subtitle" style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
+                    Your saved artists and packages — <strong className="wishlist-page__count" style={{ color: 'var(--maroon-btn)' }}>{wishlistItems.length} saved</strong>
                   </p>
                 </div>
               </div>
-              <div style={{ display: 'flex', gap: '8px', marginBottom: '20px' }}>
+              <div className="wishlist-page__tabs" style={{ display: 'flex', gap: '8px', marginBottom: '20px' }}>
                 {['All', 'Artists', 'Salons', 'Packages'].map(t => (
-                  <button key={t} onClick={() => setWishlistTab(t)} style={{ padding: '6px 14px', borderRadius: '20px', border: wishlistTab === t ? '1.5px solid var(--maroon-btn)' : '1.5px solid var(--card-border)', background: wishlistTab === t ? 'var(--maroon-light)' : 'transparent', color: wishlistTab === t ? 'var(--maroon-btn)' : 'var(--text-muted)', fontFamily: 'var(--font-btn)', fontWeight: 600, fontSize: '0.78rem', cursor: 'pointer' }}>{t}</button>
+                  <button key={t} className="wishlist-page__tab" onClick={() => setWishlistTab(t)} style={{ padding: '6px 14px', borderRadius: '20px', border: wishlistTab === t ? '1.5px solid var(--maroon-btn)' : '1.5px solid var(--card-border)', background: wishlistTab === t ? 'var(--maroon-light)' : 'transparent', color: wishlistTab === t ? 'var(--maroon-btn)' : 'var(--text-muted)', fontFamily: 'var(--font-btn)', fontWeight: 600, fontSize: '0.78rem', cursor: 'pointer' }}>{t}</button>
                 ))}
               </div>
               {wishlistItems.length === 0 ? (
-                <div style={{ textAlign: 'center', padding: '60px 20px', background: 'var(--card-bg)', borderRadius: 'var(--radius-lg)', border: '1px solid var(--card-border)' }}>
+                <div className="wishlist-page__empty" style={{ textAlign: 'center', padding: '60px 20px', background: 'var(--card-bg)', borderRadius: 'var(--radius-lg)', border: '1px solid var(--card-border)' }}>
                   <div style={{ fontSize: '3rem', marginBottom: '16px' }}>💔</div>
-                  <h3 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.2rem', color: 'var(--sidebar-bg)', marginBottom: '8px' }}>Your wishlist is empty!</h3>
-                  <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', marginBottom: '20px' }}>Start exploring artists and save your favorites</p>
+                  <h3 className="wishlist-page__empty-title" style={{ fontFamily: 'var(--font-heading)', fontSize: '1.2rem', color: 'var(--sidebar-bg)', marginBottom: '8px' }}>Your wishlist is empty!</h3>
+                  <p className="wishlist-page__empty-text" style={{ fontSize: '0.82rem', color: 'var(--text-muted)', marginBottom: '20px' }}>Start exploring artists and save your favorites</p>
                   <button onClick={() => setActiveTab('marketplace')} className="planner-next-btn" style={{ padding: '10px 24px' }}>Explore Artists</button>
                 </div>
               ) : (
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '16px' }}>
+                <div className="wishlist-page__grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '16px' }}>
                   {[
                     { name: 'Poonam Rawat', rating: '4.9', reviews: '1250+', price: '₹28,000', location: 'South Delhi', img: '/digital_twin_portrait.png', badge: 'Most Booked', verified: true },
                     { name: 'Chandni Singh', rating: '4.9', reviews: '1050+', price: '₹35,000', location: 'South Delhi', img: '/recommend_salon1.png', badge: 'Top Rated', verified: true },
                     { name: 'Anu Kaushik', rating: '4.8', reviews: '920+', price: '₹30,000', location: 'Chattarpur, New Delhi', img: '/recommend_salon2.png', verified: true },
                   ].filter(a => wishlistItems.includes(a.name)).map(a => (
-                    <div key={a.name} style={{ border: '1px solid var(--card-border)', borderRadius: 'var(--radius-lg)', overflow: 'hidden', background: 'var(--card-bg)', boxShadow: 'var(--shadow-sm)' }}>
+                    <div key={a.name} className="wishlist-page__card" style={{ border: '1px solid var(--card-border)', borderRadius: 'var(--radius-lg)', overflow: 'hidden', background: 'var(--card-bg)', boxShadow: 'var(--shadow-sm)' }}>
                       <div style={{ position: 'relative', height: 140 }}>
                         <img src={a.img} alt={a.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                        {a.badge && <span style={{ position: 'absolute', top: 10, left: 10, background: 'var(--maroon-btn)', color: 'var(--text-white)', fontSize: '0.6rem', fontWeight: 700, padding: '2px 10px', borderRadius: 20 }}>{a.badge}</span>}
-                        <button onClick={() => toggleWishlist(a.name)} style={{ position: 'absolute', top: 10, right: 10, background: 'var(--card-bg)', border: 'none', borderRadius: '50%', width: 30, height: 30, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', boxShadow: 'var(--shadow-sm)' }}>
+                        {a.badge && <span className="wishlist-page__badge" style={{ position: 'absolute', top: 10, left: 10, background: 'var(--maroon-btn)', color: 'var(--text-white)', fontSize: '0.6rem', fontWeight: 700, padding: '2px 10px', borderRadius: 20 }}>{a.badge}</span>}
+                        <button className="wishlist-page__heart" onClick={() => toggleWishlist(a.name)} style={{ position: 'absolute', top: 10, right: 10, background: 'var(--card-bg)', border: 'none', borderRadius: '50%', width: 30, height: 30, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', boxShadow: 'var(--shadow-sm)' }}>
                           <Heart size={14} style={{ color: 'var(--maroon-btn)', fill: 'var(--maroon-btn)' }} />
                         </button>
                       </div>
-                      <div style={{ padding: '16px', textAlign: 'left' }}>
+                      <div className="wishlist-page__card-body" style={{ padding: '16px', textAlign: 'left' }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 4 }}>
-                          <h3 style={{ fontFamily: 'var(--font-heading)', fontSize: '1rem', fontWeight: 700, color: 'var(--sidebar-bg)', margin: 0 }}>{a.name}</h3>
+                          <h3 className="wishlist-page__card-title" style={{ fontFamily: 'var(--font-heading)', fontSize: '1rem', fontWeight: 700, color: 'var(--sidebar-bg)', margin: 0 }}>{a.name}</h3>
                           {a.verified && <span className="artist-verified">✔ Verified</span>}
                         </div>
-                        <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: 8 }}>★ {a.rating} ({a.reviews}) · {a.location}</div>
-                        <div style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--maroon-btn)', fontFamily: 'var(--font-heading)', marginBottom: '12px' }}>{a.price}</div>
+                        <div className="wishlist-page__card-meta" style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: 8 }}>★ {a.rating} ({a.reviews}) · {a.location}</div>
+                        <div className="wishlist-page__card-price" style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--maroon-btn)', fontFamily: 'var(--font-heading)', marginBottom: '12px' }}>{a.price}</div>
                         <div style={{ display: 'flex', gap: 8 }}>
-                          <button onClick={() => setActiveTab('marketplace')} style={{ flex: 1, background: 'var(--maroon-btn)', color: 'var(--text-white)', border: 'none', borderRadius: 'var(--radius-sm)', padding: '8px', fontFamily: 'var(--font-btn)', fontWeight: 600, fontSize: '0.75rem', cursor: 'pointer' }}>Quick Book</button>
-                          <button onClick={() => setActiveTab('marketplace')} style={{ flex: 1, background: 'transparent', color: 'var(--text-dark)', border: '1.5px solid var(--card-border)', borderRadius: 'var(--radius-sm)', padding: '8px', fontFamily: 'var(--font-btn)', fontWeight: 600, fontSize: '0.75rem', cursor: 'pointer' }}>View Profile</button>
+                          <button className="wishlist-page__primary-btn" onClick={() => setActiveTab('marketplace')} style={{ flex: 1, background: 'var(--maroon-btn)', color: 'var(--text-white)', border: 'none', borderRadius: 'var(--radius-sm)', padding: '8px', fontFamily: 'var(--font-btn)', fontWeight: 600, fontSize: '0.75rem', cursor: 'pointer' }}>Quick Book</button>
+                          <button className="wishlist-page__secondary-btn" onClick={() => setActiveTab('marketplace')} style={{ flex: 1, background: 'transparent', color: 'var(--text-dark)', border: '1.5px solid var(--card-border)', borderRadius: 'var(--radius-sm)', padding: '8px', fontFamily: 'var(--font-btn)', fontWeight: 600, fontSize: '0.75rem', cursor: 'pointer' }}>View Profile</button>
                         </div>
                       </div>
                     </div>
@@ -1351,10 +1366,12 @@ function App() {
         )}
 
         {toastMessage && (
-          <div style={{ position: 'fixed', top: 24, right: 24, background: '#2ecc71', color: 'white', padding: '12px 24px', borderRadius: 'var(--radius-sm)', zIndex: 9999, fontFamily: 'var(--font-btn)', fontWeight: 600, fontSize: '0.85rem', boxShadow: '0 4px 20px rgba(0,0,0,0.3)', display: 'flex', alignItems: 'center', gap: 8 }}>
+          <div style={{ position: 'fixed', top: 24, right: 24, background: 'var(--success)', color: 'var(--text-white)', padding: '12px 24px', borderRadius: 'var(--radius-sm)', zIndex: 9999, fontFamily: 'var(--font-btn)', fontWeight: 600, fontSize: '0.85rem', boxShadow: '0 4px 20px rgba(0,0,0,0.3)', display: 'flex', alignItems: 'center', gap: 8 }}>
             <span>✓</span> {toastMessage}
           </div>
         )}
+
+        <ApiKeyModal visible={showApiKeyModal} onClose={() => setShowApiKeyModal(false)} />
 
       </main>
     </div>

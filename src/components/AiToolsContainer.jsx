@@ -2,11 +2,11 @@ import { useState, useEffect, useMemo, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Sparkles, Calendar, Scissors, Smile, Image, Percent, HeartPulse, MessageCircle, Send, Phone, Camera, Star, Droplets, ShieldCheck, Eye, Heart, Zap, Clock, Gem } from 'lucide-react';
 import { DigitalTwinAvatar, FaceShapeGrid, SpotEraserSVG, PremiumImage, IMAGES } from '../assets/illustrations';
-import { askOpenRouter, saveApiKey, hasApiKey } from '../services/aiService';
+import { askOpenRouter, saveApiKey, hasApiKey, ensureApiKey } from '../services/aiService';
 
 const gold = 'var(--ai-gold)';
 const softGold = 'var(--ai-soft-gold)';
-const successGreen = '#2E8B57';
+const successGreen = 'var(--success)';
 
 function TabHeader({ category, title, icon: IconComp, subtitle }) {
   return (
@@ -122,15 +122,87 @@ export default function AiToolsContainer({ initialActiveTool = 'twin' }) {
   const [selectedLook, setSelectedLook] = useState('Royal Bridal');
   const [isAnalyzingTwin, setIsAnalyzingTwin] = useState(false);
 
-  // Live Camera & Photo upload states
+  async function handleTwinSubmit(e) {
+    if (e && e.preventDefault) e.preventDefault();
+    ensureApiKey(() => {
+      setIsAnalyzingTwin(true);
+      performTwinAnalysis();
+    });
+  }
+
+  const performTwinAnalysis = () => {
+    (async () => {
+      const prompt = `Perform a bridal skin and hair biometric simulation. Inputs are:
+Skin Type: ${twinForm.skinType}
+Hair Texture: ${twinForm.hairType}
+
+Return a valid JSON object matching this schema exactly (do not include any conversational text or markdown formatting code blocks, just pure JSON):
+{
+  "readinessScore": 88,
+  "skinScore": 86,
+  "hairScore": 80,
+  "glowIndex": 9.2,
+  "skinProfile": "Descriptive skin status line",
+  "hairProfile": "Descriptive hair status line",
+  "recs": [
+    "Skincare recommendation 1",
+    "Skincare recommendation 2",
+    "Haircare recommendation 3"
+  ]
+}`;
+
+      const systemInstruction = "You are an AI beauty biometric analyzer. You generate accurate, customized skincare and haircare diagnostics. You only return valid, parseable JSON.";
+
+      try {
+        const response = await askOpenRouter(prompt, systemInstruction);
+        const cleanedResponse = response.replace(/```json/g, "").replace(/```/g, "").trim();
+        const resultObj = JSON.parse(cleanedResponse);
+
+        setTwinResult({
+          readinessScore: resultObj.readinessScore || 85,
+          skinScore: resultObj.skinScore || 84,
+          hairScore: resultObj.hairScore || 78,
+          glowIndex: resultObj.glowIndex || 8.8,
+          skinProfile: resultObj.skinProfile || `${twinForm.skinType} - Custom Profile`,
+          hairProfile: resultObj.hairProfile || `${twinForm.hairType} - Custom Profile`,
+          recs: Array.isArray(resultObj.recs) ? resultObj.recs.slice(0, 3) : ['Skincare recommendation', 'Haircare recommendation', 'Lifestyle recommendation']
+        });
+      } catch (err) {
+        console.error("Failed to analyze twin with AI:", err);
+        setTwinResult({
+          readinessScore: Math.floor(Math.random() * 15) + 80,
+          skinScore: Math.floor(Math.random() * 15) + 80,
+          hairScore: Math.floor(Math.random() * 15) + 75,
+          glowIndex: parseFloat((Math.random() * 2 + 8).toFixed(1)),
+          skinProfile: `${twinForm.skinType} — Dynamic Profile`,
+          hairProfile: `${twinForm.hairType} — Custom Texture`,
+          recs: [
+            `Adjust skincare routine for ${twinForm.skinType} skin.`,
+            `Keep your ${twinForm.hairType} hair nourished with oils.`,
+            `Consult with a local Delhi specialist for a custom treatment.`
+          ]
+        });
+      } finally {
+        setTimeout(() => {
+          setIsAnalyzingTwin(false);
+        }, 1000);
+      }
+    })();
+  };
+
+  const handleTwinRef = useRef(handleTwinSubmit);
+  useEffect(() => { handleTwinRef.current = handleTwinSubmit; });
+
   const [cameraActive, setCameraActive] = useState(false);
   const [capturedImg, setCapturedImg] = useState(null);
   const [cameraStream, setCameraStream] = useState(null);
   const [countdown, setCountdown] = useState(null);
+  const [cameraError, setCameraError] = useState('');
   const videoRef = useRef(null);
 
   const startCamera = async () => {
     setCapturedImg(null);
+    setCameraError('');
     try {
       if (cameraStream) {
         cameraStream.getTracks().forEach(track => track.stop());
@@ -146,7 +218,7 @@ export default function AiToolsContainer({ initialActiveTool = 'twin' }) {
       }
     } catch (err) {
       console.error("Camera connection error:", err);
-      alert("Camera permission block hai ya device available nahi hai. Kripya image upload option use karein.");
+      setCameraError("Camera permission blocked hai ya device available nahi hai. Kripya image upload option use karein.");
     }
   };
 
@@ -174,9 +246,6 @@ export default function AiToolsContainer({ initialActiveTool = 'twin' }) {
     };
     reader.readAsDataURL(file);
   };
-
-  const handleTwinRef = useRef(handleTwinSubmit);
-  useEffect(() => { handleTwinRef.current = handleTwinSubmit; });
 
   // Countdown timer effect
   useEffect(() => {
@@ -255,68 +324,6 @@ export default function AiToolsContainer({ initialActiveTool = 'twin' }) {
   const [isAnalyzingFace, setIsAnalyzingFace] = useState(false);
   const [isSosAnalyzing, setIsSosAnalyzing] = useState(false);
 
-  async function handleTwinSubmit(e) {
-    if (e && e.preventDefault) e.preventDefault();
-    setIsAnalyzingTwin(true);
-
-    const prompt = `Perform a bridal skin and hair biometric simulation. Inputs are:
-Skin Type: ${twinForm.skinType}
-Hair Texture: ${twinForm.hairType}
-
-Return a valid JSON object matching this schema exactly (do not include any conversational text or markdown formatting code blocks, just pure JSON):
-{
-  "readinessScore": 88,
-  "skinScore": 86,
-  "hairScore": 80,
-  "glowIndex": 9.2,
-  "skinProfile": "Descriptive skin status line",
-  "hairProfile": "Descriptive hair status line",
-  "recs": [
-    "Skincare recommendation 1",
-    "Skincare recommendation 2",
-    "Haircare recommendation 3"
-  ]
-}`;
-
-    const systemInstruction = "You are an AI beauty biometric analyzer. You generate accurate, customized skincare and haircare diagnostics. You only return valid, parseable JSON.";
-
-    try {
-      const response = await askOpenRouter(prompt, systemInstruction);
-      const cleanedResponse = response.replace(/```json/g, "").replace(/```/g, "").trim();
-      const resultObj = JSON.parse(cleanedResponse);
-
-      setTwinResult({
-        readinessScore: resultObj.readinessScore || 85,
-        skinScore: resultObj.skinScore || 84,
-        hairScore: resultObj.hairScore || 78,
-        glowIndex: resultObj.glowIndex || 8.8,
-        skinProfile: resultObj.skinProfile || `${twinForm.skinType} - Custom Profile`,
-        hairProfile: resultObj.hairProfile || `${twinForm.hairType} - Custom Profile`,
-        recs: Array.isArray(resultObj.recs) ? resultObj.recs.slice(0, 3) : ['Skincare recommendation', 'Haircare recommendation', 'Lifestyle recommendation']
-      });
-    } catch (err) {
-      console.error("Failed to analyze twin with AI:", err);
-      setTwinResult({
-        readinessScore: Math.floor(Math.random() * 15) + 80,
-        skinScore: Math.floor(Math.random() * 15) + 80,
-        hairScore: Math.floor(Math.random() * 15) + 75,
-        glowIndex: parseFloat((Math.random() * 2 + 8).toFixed(1)),
-        skinProfile: `${twinForm.skinType} — Dynamic Profile`,
-        hairProfile: `${twinForm.hairType} — Custom Texture`,
-        recs: [
-          `Adjust skincare routine for ${twinForm.skinType} skin.`,
-          `Keep your ${twinForm.hairType} hair nourished with oils.`,
-          `Consult with a local Delhi specialist for a custom treatment.`
-        ]
-      });
-    } finally {
-      // Simulate 1s visual scanning buffer for luxury feel
-      setTimeout(() => {
-        setIsAnalyzingTwin(false);
-      }, 1000);
-    }
-  };
-
   const [timelineCountdown] = useState(64);
   const [sosMsg, setSosMsg] = useState('');
   const [sosHistory, setSosHistory] = useState([
@@ -382,11 +389,12 @@ Return a valid JSON object matching this schema exactly (do not include any conv
   const [lehengaResult, setLehengaResult] = useState({ lookName: 'Royal Heritage Classic', lipShade: 'Matte Deep Ruby (#D00000)', eyeMakeup: 'Classic Winged Eyeliner with warm Gold metallic shimmer base', hairstyle: 'Elegant center-parted low sleek bun with fresh gajra wraps', jewellery: 'Kundan choker neckpiece with emerald hanging beads' });
 
   const updateLehengaRecs = async (color, embroidery) => {
-    setLehengaColor(color);
-    setLehengaEmbroidery(embroidery);
-    setIsMatchingLehenga(true);
+    ensureApiKey(() => {
+      setLehengaColor(color);
+      setLehengaEmbroidery(embroidery);
+      setIsMatchingLehenga(true);
 
-    const prompt = `Provide styling recommendations for a bride.
+      const prompt = `Provide styling recommendations for a bride.
 Lehenga Color: ${color}
 Embroidery Style: ${embroidery}
 
@@ -399,32 +407,35 @@ Return a valid JSON object matching this schema exactly (do not include any conv
   "jewellery": "Suggested jewelry pieces description"
 }`;
 
-    const systemInstruction = "You are an AI bridal lehenga styling expert. You only respond with JSON matching the requested structure.";
+      const systemInstruction = "You are an AI bridal lehenga styling expert. You only respond with JSON matching the requested structure.";
 
-    try {
-      const response = await askOpenRouter(prompt, systemInstruction);
-      const cleanedResponse = response.replace(/```json/g, "").replace(/```/g, "").trim();
-      const resultObj = JSON.parse(cleanedResponse);
+      (async () => {
+        try {
+          const response = await askOpenRouter(prompt, systemInstruction);
+          const cleanedResponse = response.replace(/```json/g, "").replace(/```/g, "").trim();
+          const resultObj = JSON.parse(cleanedResponse);
 
-      setLehengaResult({
-        lookName: resultObj.lookName || 'Royal Heritage Classic',
-        lipShade: resultObj.lipShade || 'Matte Deep Ruby (#D00000)',
-        eyeMakeup: resultObj.eyeMakeup || 'Classic Winged Eyeliner with warm Gold metallic shimmer base',
-        hairstyle: resultObj.hairstyle || 'Elegant center-parted low sleek bun with fresh gajra wraps',
-        jewellery: resultObj.jewellery || 'Kundan choker neckpiece with emerald hanging beads'
-      });
-    } catch (err) {
-      console.error("Failed to match lehenga:", err);
-      const recs = {
-        'Crimson Red': { lookName: 'Royal Heritage Classic', lipShade: 'Matte Deep Ruby (#D00000)', eyeMakeup: 'Classic Winged Eyeliner with warm Gold metallic shimmer base', hairstyle: 'Elegant center-parted low sleek bun with fresh gajra wraps', jewellery: 'Kundan choker neckpiece with emerald hanging beads' },
-        'Pastel Pink': { lookName: 'Dewy Blossom Glow', lipShade: 'Soft Dusty Rose Gloss (#E88F9A)', eyeMakeup: 'Rose gold halo eyeshadow with soft brown smoked liner', hairstyle: 'Loose textured romantic waves with side-swept floral pins', jewellery: 'Polki choker with pink tourmaline droplets' },
-        'Mustard Yellow': { lookName: 'Marigold Sunshine Blush', lipShade: 'Warm Terracotta Nude (#C86446)', eyeMakeup: 'Soft bronze cut crease with dual-tone chrome gold pigments', hairstyle: 'French braided half-updo with baby\'s breath flowers', jewellery: 'Temple gold jewellery set with heritage engravings' },
-        'Velvet Navy': { lookName: 'Midnight Royalty Glitz', lipShade: 'Sophisticated Mauve Satin (#9B6A84)', eyeMakeup: 'Deep charcoal smoky eyes with soft gold inner-corner highlights', hairstyle: 'Hollywood glam side waves with side crystal hair barrette', jewellery: 'Diamond/White Gold choker with royal blue sapphire drop earrings' },
-      };
-      setLehengaResult(recs[color] || recs['Crimson Red']);
-    } finally {
-      setIsMatchingLehenga(false);
-    }
+          setLehengaResult({
+            lookName: resultObj.lookName || 'Royal Heritage Classic',
+            lipShade: resultObj.lipShade || 'Matte Deep Ruby (#D00000)',
+            eyeMakeup: resultObj.eyeMakeup || 'Classic Winged Eyeliner with warm Gold metallic shimmer base',
+            hairstyle: resultObj.hairstyle || 'Elegant center-parted low sleek bun with fresh gajra wraps',
+            jewellery: resultObj.jewellery || 'Kundan choker neckpiece with emerald hanging beads'
+          });
+        } catch (err) {
+          console.error("Failed to match lehenga:", err);
+          const recs = {
+            'Crimson Red': { lookName: 'Royal Heritage Classic', lipShade: 'Matte Deep Ruby (#D00000)', eyeMakeup: 'Classic Winged Eyeliner with warm Gold metallic shimmer base', hairstyle: 'Elegant center-parted low sleek bun with fresh gajra wraps', jewellery: 'Kundan choker neckpiece with emerald hanging beads' },
+            'Pastel Pink': { lookName: 'Dewy Blossom Glow', lipShade: 'Soft Dusty Rose Gloss (#E88F9A)', eyeMakeup: 'Rose gold halo eyeshadow with soft brown smoked liner', hairstyle: 'Loose textured romantic waves with side-swept floral pins', jewellery: 'Polki choker with pink tourmaline droplets' },
+            'Mustard Yellow': { lookName: 'Marigold Sunshine Blush', lipShade: 'Warm Terracotta Nude (#C86446)', eyeMakeup: 'Soft bronze cut crease with dual-tone chrome gold pigments', hairstyle: 'French braided half-updo with baby\'s breath flowers', jewellery: 'Temple gold jewellery set with heritage engravings' },
+            'Velvet Navy': { lookName: 'Midnight Royalty Glitz', lipShade: 'Sophisticated Mauve Satin (#9B6A84)', eyeMakeup: 'Deep charcoal smoky eyes with soft gold inner-corner highlights', hairstyle: 'Hollywood glam side waves with side crystal hair barrette', jewellery: 'Diamond/White Gold choker with royal blue sapphire drop earrings' },
+          };
+          setLehengaResult(recs[color] || recs['Crimson Red']);
+        } finally {
+          setIsMatchingLehenga(false);
+        }
+      })();
+    });
   };
 
   const [faceShape, setFaceShape] = useState('Heart');
@@ -435,10 +446,11 @@ Return a valid JSON object matching this schema exactly (do not include any conv
     Heart: { contour: 'Deepen the zygomatic arches to soften the jawline. Use rose gold shimmer on high points.', hair: 'Loose textured waves starting below jawline, side-swept bangs.', jewelry: 'Chandbalis, round hoops, heavy multi-layered collar necklaces.', makeup: 'Elongated winged liner to balance the wider forehead. Highlight the jaw angles.' },
     Square: { contour: 'Deep shading on the jaw corners and forehead corners to soften angles.', hair: 'Soft wispy side bangs, romantic textured messy braids, side-part waves.', jewelry: 'Oval hoops, circular studs, round button neck chokers.', makeup: 'Soft circular blush application with diffused lips — no hard outlines.' },
   }), []);
-
   useEffect(() => {
     const fetchFaceShapeRecs = async () => {
+      if (!hasApiKey()) { return; }
       setIsAnalyzingFace(true);
+
       const prompt = `Analyze face shape: ${faceShape}.
 Return a valid JSON object matching this schema exactly (do not include any conversational text or markdown formatting code blocks, just pure JSON):
 {
@@ -469,14 +481,13 @@ Return a valid JSON object matching this schema exactly (do not include any conv
       }
     };
 
-    fetchFaceShapeRecs();
+    if (hasApiKey()) {
+      fetchFaceShapeRecs();
+    }
   }, [faceShape, faceShapeRecs]);
 
   const [budgetVal, setBudgetVal] = useState(425000);
   const breakdown = { makeup: Math.round(budgetVal * 0.47), skincare: Math.round(budgetVal * 0.25), hair: Math.round(budgetVal * 0.16), nails: Math.round(budgetVal * 0.05), emergency: Math.round(budgetVal * 0.07) };
-
-  const [showApiKeyModal, setShowApiKeyModal] = useState(false);
-  const [apiKeyInput, setApiKeyInput] = useState('');
 
   const [chatInput, setChatInput] = useState('');
   const [chatHistory, setChatHistory] = useState([{ sender: 'ai', text: 'Hello! I\'m your AI Bridal Beauty Copilot. Ask me about budget breakdowns, skincare timelines, or any wedding beauty concern.' }]);
@@ -485,53 +496,52 @@ Return a valid JSON object matching this schema exactly (do not include any conv
   const handleSosSubmit = async (textToSend) => {
     const text = textToSend || sosMsg;
     if (!text.trim()) return;
-    if (!hasApiKey()) {
-      setShowApiKeyModal(true);
-      return;
-    }
+    ensureApiKey(() => {
+      setSosHistory(prev => [...prev, { text, from: 'user' }]);
+      setSosMsg('');
+      setIsSosAnalyzing(true);
 
-    setSosHistory(prev => [...prev, { text, from: 'user' }]);
-    setSosMsg('');
-    setIsSosAnalyzing(true);
+      setSosHistory(prev => [...prev, { text: 'Analyzing inflammation patterns & concern details...', from: 'bot', isAnalyzing: true }]);
 
-    setSosHistory(prev => [...prev, { text: 'Analyzing inflammation patterns & concern details...', from: 'bot', isAnalyzing: true }]);
+      const systemInstruction = "You are an AI Emergency Bridal Beauty Co-Pilot (SOS). Give extremely rapid, safe, and helpful home remedies or makeup cover-up tips for last-minute skin issues (pimple, redness, dark circles, rash, swelling). Keep responses short (under 60 words). Always advise caution and testing on a small skin patch.";
 
-    const systemInstruction = "You are an AI Emergency Bridal Beauty Co-Pilot (SOS). Give extremely rapid, safe, and helpful home remedies or makeup cover-up tips for last-minute skin issues (pimple, redness, dark circles, rash, swelling). Keep responses short (under 60 words). Always advise caution and testing on a small skin patch.";
-
-    try {
-      const response = await askOpenRouter(text, systemInstruction);
-      setSosHistory(prev => prev.filter(m => !m.isAnalyzing).concat({ text: response || "Sorry, I'm having trouble connecting. Apply a cold compress (ice wrapped in clean cloth) to soothe inflammation in the meantime! 🧊", from: 'bot' }));
-    } catch (err) {
-      console.error("SOS API Error:", err);
-      setSosHistory(prev => prev.filter(m => !m.isAnalyzing).concat({ text: "Sorry, I'm having trouble connecting. Apply a cold compress (ice wrapped in clean cloth) to soothe inflammation in the meantime! 🧊", from: 'bot' }));
-    } finally {
-      setIsSosAnalyzing(false);
-    }
+      (async () => {
+        try {
+          const response = await askOpenRouter(text, systemInstruction);
+          setSosHistory(prev => prev.filter(m => !m.isAnalyzing).concat({ text: response || "Sorry, I'm having trouble connecting. Apply a cold compress (ice wrapped in clean cloth) to soothe inflammation in the meantime! 🧊", from: 'bot' }));
+        } catch (err) {
+          console.error("SOS API Error:", err);
+          setSosHistory(prev => prev.filter(m => !m.isAnalyzing).concat({ text: "Sorry, I'm having trouble connecting. Apply a cold compress (ice wrapped in clean cloth) to soothe inflammation in the meantime! 🧊", from: 'bot' }));
+        } finally {
+          setIsSosAnalyzing(false);
+        }
+      })();
+    });
   };
 
   const handleChatSubmit = async (e) => {
     e.preventDefault();
     if (!chatInput.trim()) return;
-    if (!hasApiKey()) {
-      setShowApiKeyModal(true);
-      return;
-    }
-    const userMsg = chatInput;
-    setChatHistory(prev => [...prev, { sender: 'user', text: userMsg }]);
-    setChatInput('');
-    setIsTyping(true);
+    ensureApiKey(() => {
+      const userMsg = chatInput;
+      setChatHistory(prev => [...prev, { sender: 'user', text: userMsg }]);
+      setChatInput('');
+      setIsTyping(true);
 
-    const systemInstruction = "You are Noor AI, a luxury Indian bridal beauty copilot assistant. You help brides plan their makeup looks, skincare routines, hair treatments, and organize their budgets. Keep answers structured, friendly, elegant, and concise (under 120 words). Offer customized suggestions based on Delhi wedding preferences when relevant.";
+      const systemInstruction = "You are Noor AI, a luxury Indian bridal beauty copilot assistant. You help brides plan their makeup looks, skincare routines, hair treatments, and organize their budgets. Keep answers structured, friendly, elegant, and concise (under 120 words). Offer customized suggestions based on Delhi wedding preferences when relevant.";
 
-    try {
-      const response = await askOpenRouter(userMsg, systemInstruction);
-      setChatHistory(prev => [...prev, { sender: 'ai', text: response || "I'm having trouble connecting right now. Please try again later! 🙏" }]);
-    } catch (err) {
-      console.error("Chat API error:", err);
-      setChatHistory(prev => [...prev, { sender: 'ai', text: "I'm having trouble connecting right now. Please try again later! 🙏" }]);
-    } finally {
-      setIsTyping(false);
-    }
+      (async () => {
+        try {
+          const response = await askOpenRouter(userMsg, systemInstruction);
+          setChatHistory(prev => [...prev, { sender: 'ai', text: response || "I'm having trouble connecting right now. Please try again later! 🙏" }]);
+        } catch (err) {
+          console.error("Chat API error:", err);
+          setChatHistory(prev => [...prev, { sender: 'ai', text: "I'm having trouble connecting right now. Please try again later! 🙏" }]);
+        } finally {
+          setIsTyping(false);
+        }
+      })();
+    });
   };
 
   const contentVariants = { initial: { opacity: 0, y: 15 }, animate: { opacity: 1, y: 0, transition: { duration: 0.3 } }, exit: { opacity: 0, y: -15, transition: { duration: 0.2 } } };
@@ -577,7 +587,7 @@ Return a valid JSON object matching this schema exactly (do not include any conv
                 <motion.button key={tab.id} onClick={() => setActiveTab(tab.id)}
                   style={{
                     background: isSelected ? `linear-gradient(135deg, ${gold}, ${softGold})` : 'var(--ai-card-subtle)',
-                    color: isSelected ? '#FFFFFF' : 'var(--ai-text-secondary)',
+                    color: isSelected ? 'var(--text-white)' : 'var(--ai-text-secondary)',
                     border: isSelected ? 'none' : `1px solid var(--ai-border)`,
                     borderRadius: 12, padding: '14px 18px',
                     fontSize: '0.8rem', fontWeight: isSelected ? 600 : 500, cursor: 'pointer',
@@ -587,9 +597,9 @@ Return a valid JSON object matching this schema exactly (do not include any conv
                   }}
                   whileHover={{ x: 3, background: isSelected ? `linear-gradient(135deg, ${gold}, ${softGold})` : 'var(--ai-card)' }} whileTap={{ scale: 0.97 }}
                 >
-                  <IconComp size={14} style={{ color: isSelected ? '#FFFFFF' : 'var(--ai-text-secondary)' }} />
+                  <IconComp size={14} style={{ color: isSelected ? 'var(--text-white)' : 'var(--ai-text-secondary)' }} />
                   {tab.label}
-                  {isSelected && <motion.div layoutId="goldDot" style={{ marginLeft: 'auto', width: 5, height: 5, borderRadius: '50%', background: '#FFFFFF' }} />}
+                  {isSelected && <motion.div layoutId="goldDot" style={{ marginLeft: 'auto', width: 5, height: 5, borderRadius: '50%', background: 'var(--text-white)' }} />}
                 </motion.button>
               );
             })}
@@ -643,6 +653,26 @@ Return a valid JSON object matching this schema exactly (do not include any conv
                     <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.4rem', color: 'var(--ai-text)', margin: 0 }}>
                       AI Facial Scan
                     </h2>
+
+                    {cameraError && (
+                      <div style={{
+                        background: 'rgba(231,76,60,0.12)',
+                        border: '1px solid rgba(231,76,60,0.3)',
+                        borderRadius: 10,
+                        padding: '8px 12px',
+                        fontSize: '0.72rem',
+                        color: '#ff6b6b',
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        gap: 10,
+                        textAlign: 'left',
+                        zIndex: 100
+                      }}>
+                        <span>⚠️ {cameraError}</span>
+                        <button onClick={() => setCameraError('')} style={{ background: 'none', border: 'none', color: '#ff6b6b', cursor: 'pointer', fontSize: '0.8rem', fontWeight: 'bold' }}>✕</button>
+                      </div>
+                    )}
                     
                     {/* Selfie scan visualization */}
                     <div style={{ position: 'relative', width: '100%', height: 260, borderRadius: 14, overflow: 'hidden', border: '1px solid var(--ai-border)', background: '#050505', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -697,7 +727,7 @@ Return a valid JSON object matching this schema exactly (do not include any conv
                           >
                             {countdown}
                           </motion.div>
-                          <div style={{ fontSize: '0.62rem', color: '#FFFFFF', letterSpacing: '1.5px', textTransform: 'uppercase', marginTop: 8, fontWeight: 700, fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+                          <div style={{ fontSize: '0.62rem', color: 'var(--text-white)', letterSpacing: '1.5px', textTransform: 'uppercase', marginTop: 8, fontWeight: 700, fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
                             Calibrating Scan... Hold Still
                           </div>
                         </div>
@@ -749,7 +779,7 @@ Return a valid JSON object matching this schema exactly (do not include any conv
                             padding: '2px 6px',
                             borderRadius: 4,
                             fontSize: '0.55rem',
-                            color: '#FFFFFF',
+                            color: 'var(--text-white)',
                             fontFamily: "'Plus Jakarta Sans', sans-serif",
                             pointerEvents: 'none',
                             boxShadow: '0 2px 8px rgba(0,0,0,0.5)'
@@ -880,7 +910,7 @@ Return a valid JSON object matching this schema exactly (do not include any conv
                     </div>
 
                     <motion.button onClick={handleTwinSubmit} disabled={isAnalyzingTwin}
-                      style={{ width: '100%', padding: '12px', background: `linear-gradient(135deg, ${gold}, ${softGold})`, border: 'none', borderRadius: 12, color: '#FFFFFF', fontWeight: 700, fontSize: '0.8rem', cursor: 'pointer', fontFamily: "'Plus Jakarta Sans', sans-serif" }}
+                      style={{ width: '100%', padding: '12px', background: `linear-gradient(135deg, ${gold}, ${softGold})`, border: 'none', borderRadius: 12, color: 'var(--text-white)', fontWeight: 700, fontSize: '0.8rem', cursor: 'pointer', fontFamily: "'Plus Jakarta Sans', sans-serif" }}
                       whileHover={{ scale: 1.01, boxShadow: `0 4px 20px rgba(212,175,55,0.25)` }} whileTap={{ scale: 0.98 }}
                     >
                       {isAnalyzingTwin ? 'Analyzing Biometrics...' : 'Trigger Recalibration Scan'}
@@ -1344,7 +1374,7 @@ Return a valid JSON object matching this schema exactly (do not include any conv
                 <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 20 }}>
                   {Object.keys(looksData).map(lookKey => (
                     <motion.button key={lookKey} onClick={() => setSelectedLook(lookKey)} whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
-                      style={{ padding: '8px 16px', borderRadius: 10, border: selectedLook === lookKey ? 'none' : `1px solid var(--ai-border)`, background: selectedLook === lookKey ? gold : 'var(--ai-card-subtle)', color: selectedLook === lookKey ? '#FFFFFF' : 'var(--ai-text-secondary)', fontWeight: 650, cursor: 'pointer', fontSize: '0.78rem', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+                      style={{ padding: '8px 16px', borderRadius: 10, border: selectedLook === lookKey ? 'none' : `1px solid var(--ai-border)`, background: selectedLook === lookKey ? gold : 'var(--ai-card-subtle)', color: selectedLook === lookKey ? 'var(--text-white)' : 'var(--ai-text-secondary)', fontWeight: 650, cursor: 'pointer', fontSize: '0.78rem', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
                       {lookKey}
                     </motion.button>
                   ))}
@@ -1542,7 +1572,7 @@ Return a valid JSON object matching this schema exactly (do not include any conv
                         style={{ ...inputStyle, flex: 1 }} />
                       <motion.button style={{ background: `linear-gradient(135deg, ${gold}, ${softGold})`, border: 'none', borderRadius: 12, width: 44, height: 44, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }} onClick={() => handleSosSubmit()} disabled={isSosAnalyzing}
                         whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                        <Send size={16} style={{ color: '#FFFFFF' }} />
+                        <Send size={16} style={{ color: 'var(--text-white)' }} />
                       </motion.button>
                     </div>
                   </div>
@@ -1568,12 +1598,12 @@ Return a valid JSON object matching this schema exactly (do not include any conv
                       </div>
                     </div>
                     <motion.div style={{ ...glassCard, padding: 16, display: 'flex', alignItems: 'center', gap: 12, border: `1px solid rgba(212,175,55,0.15)` }} whileHover={{ borderColor: gold }}>
-                      <div style={{ width: 36, height: 36, borderRadius: '50%', background: `linear-gradient(135deg, ${gold}, ${softGold})`, display: 'flex', color: '#FFFFFF' }}><Phone size={16} style={{ margin: 'auto' }} /></div>
+                      <div style={{ width: 36, height: 36, borderRadius: '50%', background: `linear-gradient(135deg, ${gold}, ${softGold})`, display: 'flex', color: 'var(--text-white)' }}><Phone size={16} style={{ margin: 'auto' }} /></div>
                       <div style={{ flex: 1 }}>
                         <strong style={{ fontSize: '0.78rem', color: 'var(--ai-text)', display: 'block', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>Need a human consultant?</strong>
                         <span style={{ fontSize: '0.68rem', color: 'var(--ai-text-secondary)', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>Connect with a South Delhi bridal expert immediately.</span>
                       </div>
-                      <motion.button style={{ background: `linear-gradient(135deg, ${gold}, ${softGold})`, border: 'none', borderRadius: 10, padding: '8px 16px', color: '#FFFFFF', fontWeight: 700, fontSize: '0.7rem', cursor: 'pointer', fontFamily: "'Plus Jakarta Sans', sans-serif" }} whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} onClick={handleStartCall}>Call Now</motion.button>
+                      <motion.button style={{ background: `linear-gradient(135deg, ${gold}, ${softGold})`, border: 'none', borderRadius: 10, padding: '8px 16px', color: 'var(--text-white)', fontWeight: 700, fontSize: '0.7rem', cursor: 'pointer', fontFamily: "'Plus Jakarta Sans', sans-serif" }} whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} onClick={handleStartCall}>Call Now</motion.button>
                     </motion.div>
                   </div>
                 </div>
@@ -1596,7 +1626,7 @@ Return a valid JSON object matching this schema exactly (do not include any conv
                   <AnimatePresence>
                     {chatHistory.map((msg, i) => (
                       <motion.div key={i} initial={{ opacity: 0, y: 8, scale: 0.95 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ duration: 0.2 }}
-                        style={{ maxWidth: '80%', padding: '10px 14px', borderRadius: 14, fontSize: '0.8rem', lineHeight: 1.6, alignSelf: msg.sender === 'user' ? 'flex-end' : 'flex-start', background: msg.sender === 'user' ? `linear-gradient(135deg, ${gold}, ${softGold})` : 'var(--ai-card-subtle)', color: msg.sender === 'user' ? '#FFFFFF' : 'var(--ai-text)', borderTopRightRadius: msg.sender === 'user' ? 2 : 14, borderTopLeftRadius: msg.sender === 'ai' ? 2 : 14, whiteSpace: 'pre-line', border: msg.sender === 'ai' ? `1px solid ${'var(--ai-border)'}` : 'none', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+                        style={{ maxWidth: '80%', padding: '10px 14px', borderRadius: 14, fontSize: '0.8rem', lineHeight: 1.6, alignSelf: msg.sender === 'user' ? 'flex-end' : 'flex-start', background: msg.sender === 'user' ? `linear-gradient(135deg, ${gold}, ${softGold})` : 'var(--ai-card-subtle)', color: msg.sender === 'user' ? 'var(--text-white)' : 'var(--ai-text)', borderTopRightRadius: msg.sender === 'user' ? 2 : 14, borderTopLeftRadius: msg.sender === 'ai' ? 2 : 14, whiteSpace: 'pre-line', border: msg.sender === 'ai' ? `1px solid ${'var(--ai-border)'}` : 'none', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
                         {msg.text}
                       </motion.div>
                     ))}
@@ -1609,7 +1639,7 @@ Return a valid JSON object matching this schema exactly (do not include any conv
                 </div>
                 <form onSubmit={handleChatSubmit} style={{ display: 'flex', gap: 10, marginTop: 24 }}>
                   <input type="text" placeholder="Ask about budget, skincare, or timelines..." value={chatInput} onChange={(e) => setChatInput(e.target.value)} style={{ ...inputStyle, flex: 1 }} />
-                  <motion.button type="submit" style={{ background: `linear-gradient(135deg, ${gold}, ${softGold})`, border: 'none', borderRadius: 12, padding: '12px 24px', color: '#FFFFFF', fontWeight: 700, fontSize: '0.8rem', cursor: 'pointer', fontFamily: "'Plus Jakarta Sans', sans-serif" }} whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
+                  <motion.button type="submit" style={{ background: `linear-gradient(135deg, ${gold}, ${softGold})`, border: 'none', borderRadius: 12, padding: '12px 24px', color: 'var(--text-white)', fontWeight: 700, fontSize: '0.8rem', cursor: 'pointer', fontFamily: "'Plus Jakarta Sans', sans-serif" }} whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
                     <Send size={16} />
                   </motion.button>
                 </form>
@@ -1678,7 +1708,7 @@ Return a valid JSON object matching this schema exactly (do not include any conv
 
             {/* Hangup button */}
             <motion.button onClick={handleEndCall} style={{ background: '#e74c3c', border: 'none', borderRadius: '50%', width: 52, height: 52, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', boxShadow: '0 8px 24px rgba(231,76,60,0.3)' }} whileHover={{ scale: 1.08 }} whileTap={{ scale: 0.92 }}>
-              <Phone size={20} style={{ color: '#FFFFFF', transform: 'rotate(135deg)' }} />
+              <Phone size={20} style={{ color: 'var(--text-white)', transform: 'rotate(135deg)' }} />
             </motion.button>
           </div>
         </div>
