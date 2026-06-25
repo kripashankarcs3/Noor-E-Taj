@@ -4,7 +4,7 @@
 
 ## 1. Project Overview
 
-**BrideVerse AI** Delhi NCR ki brides ke liye ek intelligent bridal beauty marketplace hai. Yeh ek all-in-one AI-powered wedding planning co-pilot hai jo brides ko salons discover karne, wedding looks visualize karne, budgets manage karne, aur vendors ke saath coordinate karne mein help karta hai — sab ek hi dashboard mein.
+**BrideVerse AI** is an intelligent bridal beauty marketplace for brides in Delhi NCR. It is an all-in-one AI-powered wedding planning co-pilot that helps brides discover salons, visualize wedding looks, manage budgets, and coordinate with vendors — all within a single dashboard.
 
 **Project Type:** Frontend Single Page Application (SPA)  
 **Status:** Functional Prototype / MVP  
@@ -12,58 +12,58 @@
 
 ---
 
-## 2. Problem Statement (Kyu Banaya?)
+## 2. Problem Statement
 
-Indian weddings mein brides ko 5 major problems face karni padti hain:
+Indian weddings present 5 major problems for brides:
 
 | # | Problem | Explanation |
 |---|---------|-------------|
-| 1 | **Discovery Gap** | Delhi NCR mein bridal makeup artists, mehendi artists, hairstylists aur salon services dhoondhne ka koi centralized platform nahi hai. Har vendor alag app/website pe hai. |
-| 2 | **Visualisation Barrier** | Brides soch nahi sakti ki unpe different makeup looks, hairstyles, aur outfits kaise dikhenge bina actual trial kiye. |
-| 3 | **Coordination Overload** | Bookings, trials, payments, aur vendor communication multiple apps (WhatsApp, Instagram, Phone) pe manage karna exhausting hai. |
-| 4 | **Budget Blindness** | Wedding costs spiral ho jati hai kyunki koi tool nahi hai jo vendor pricing track, compare, aur optimise kare. |
-| 5 | **Moodboard Mess** | Inspiration Pinterest, Instagram, WhatsApp pe scattered hoti hai — koi unified vision board nahi hai. |
+| 1 | **Discovery Gap** | There is no centralized platform to find bridal makeup artists, mehendi artists, hairstylists, and salon services in Delhi NCR. Each vendor operates on a different app or website. |
+| 2 | **Visualisation Barrier** | Brides cannot envision how different makeup looks, hairstyles, and outfits will appear on them without actual trials. |
+| 3 | **Coordination Overload** | Managing bookings, trials, payments, and vendor communication across multiple apps (WhatsApp, Instagram, Phone) is exhausting. |
+| 4 | **Budget Blindness** | Wedding costs spiral out of control because there is no tool to track, compare, and optimize vendor pricing. |
+| 5 | **Moodboard Mess** | Inspiration is scattered across Pinterest, Instagram, and WhatsApp — there is no unified vision board. |
 
-**Solution:** BrideVerse AI inhi 5 problems ko ek hi platform pe solve karta hai.
-
----
-
-## 3. Target Audience (Kiske Liye Banaya?)
-
-- **Primary:** Delhi NCR ki brides-to-be (age 22–35)
-- **Secondary:** Wedding planners aur bridal coordinators
-- **Future Scope:** Makeup artists aur salon owners (vendor side)
+**Solution:** BrideVerse AI solves all 5 problems on a single platform.
 
 ---
 
-## 4. Tech Stack (Kya Use Kiya Aur Kyun?)
+## 3. Target Audience
+
+- **Primary:** Delhi NCR brides-to-be (age 22–35)
+- **Secondary:** Wedding planners and bridal coordinators
+- **Future Scope:** Makeup artists and salon owners (vendor side)
+
+---
+
+## 4. Tech Stack
 
 ### 4.1 Frontend Technologies
 
-| Technology | Version | Kya Hai? | Kyun Use Kiya? |
+| Technology | Version | What Is It? | Why Was It Used? |
 |---|---|---|---|
-| **React** | 19.2.6 | UI framework | Industry standard hai, component-based architecture allows reusability. Har feature ek alag component hai jo dobara use ho sakta hai. |
-| **Vite** | 8.0.12 | Build tool & dev server | Webpack se 10x fast HMR (Hot Module Replacement) deta hai. Code change karte hi browser instantly update hota hai. ES modules natively support karta hai. |
-| **JavaScript (ES6+)** | — | Programming language | TypeScript se fast prototyping hoti hai. Baad mein TypeScript migrate kar sakte hain. |
-| **Framer Motion** | 12.40.0 | Animation library | Declarative animations ke liye best hai. AnimatePresence exit animations bhi deta hai jo raw CSS mein mushkil hota hai. |
-| **Lucide React** | 1.21.0 | Icon library | Lightweight hai, tree-shakeable hai (sirf used icons bundle hoti hain), aur consistent stroke-based design hai. |
-| **CSS3 (Custom Properties)** | — | Styling | Tailwind ki jagah custom CSS isliye kyunki app ka apna brand identity hai (maroon + gold). CSS variables se theme manage karna easy hai. |
-| **localStorage API** | — | Data persistence | Backend nahi hai to client-side data store karna tha. localStorage simple hai, zero cost hai, aur refresh ke baad bhi data rehta hai. |
-| **OpenRouter API** | — | AI integration | AI Chat feature ke liye. Bina backend ke directly frontend se AI model call kar sakte hain. API key .env mein store ki gayi hai. |
+| **React** | 19.2.6 | UI framework | Industry standard with component-based architecture for reusability. Each feature is a standalone component that can be reused. |
+| **Vite** | 8.0.12 | Build tool & dev server | Provides 10x faster HMR (Hot Module Replacement) than Webpack. Browser updates instantly on code changes. Native ES module support. |
+| **JavaScript (ES6+)** | — | Programming language | Faster prototyping than TypeScript. Can migrate to TypeScript later. |
+| **Framer Motion** | 12.40.0 | Animation library | Best for declarative animations. AnimatePresence provides exit animations that are difficult with raw CSS. |
+| **Lucide React** | 1.21.0 | Icon library | Lightweight, tree-shakeable (only used icons are bundled), consistent stroke-based design. |
+| **CSS3 (Custom Properties)** | — | Styling | Custom CSS over Tailwind because the app has its own brand identity (maroon + gold). CSS variables make theme management easy. |
+| **localStorage API** | — | Data persistence | No backend, so client-side data storage was needed. localStorage is simple, zero cost, and persists after refresh. |
+| **OpenRouter API** | — | AI integration | Used for AI Chat feature. Can call AI models directly from the frontend without a backend. API key stored in .env. |
 
 ### 4.2 Backend (Planned)
 
-| Technology | Kya Hai? | Kyun Chuna? |
+| Technology | What Is It? | Why Was It Chosen? |
 |---|---|---|
-| **Node.js + Express.js** | REST API server | Frontend already JavaScript hai, to ek hi language backend + frontend. Express sabse mature Node.js framework hai. |
-| **MongoDB + Mongoose** | Database | Document-based hai to flexible schema allow karta hai. Moodboards, messages, bookings jaise dynamic data ke liye perfect. |
-| **JWT + Bcryptjs** | Authentication | Stateless auth, secure password hashing. Scale karne mein aasan hai. |
-| **Socket.io** | Real-time | Bride ⇄ Artist real-time chat ke liye. Bi-directional communication. |
-| **Multer** | File uploads | Profile photos, moodboard images upload karne ke liye. |
+| **Node.js + Express.js** | REST API server | Frontend is already JavaScript, so one language for both backend and frontend. Express is the most mature Node.js framework. |
+| **MongoDB + Mongoose** | Database | Document-based with flexible schema. Perfect for dynamic data like moodboards, messages, and bookings. |
+| **JWT + Bcryptjs** | Authentication | Stateless authentication, secure password hashing. Easy to scale. |
+| **Socket.io** | Real-time | For real-time bride-to-artist chat. Bi-directional communication. |
+| **Multer** | File uploads | For profile photos and moodboard image uploads. |
 
 ---
 
-## 5. Architecture (Kaise Bana Hai?)
+## 5. Architecture
 
 ### 5.1 Overall Structure
 
@@ -108,10 +108,10 @@ Indian weddings mein brides ko 5 major problems face karni padti hain:
 
 | Decision | Explanation |
 |---|---|
-| **No React Router** | App tab-based hai (sidebar navigation). Router ki zaroorat nahi. `activeTab` state hi component render decide karta hai. |
-| **No Redux/Context** | Simple useState + useEffect kaafi hai is scale pe. Cross-component communication ke liye custom window events use kiye. |
-| **localStorage for persistence** | Backend nahi hai to client-side store chahiye tha. localStorage refresh/session close ke baad bhi data rehta hai. |
-| **Single `noor_profile` key** | SettingsPage aur UserProfile dono same localStorage key use karte hain, to changes automatically sync ho jate hain. |
+| **No React Router** | The app is tab-based (sidebar navigation). Router is unnecessary. `activeTab` state determines which component is rendered. |
+| **No Redux/Context** | Simple useState + useEffect is sufficient at this scale. Custom window events used for cross-component communication. |
+| **localStorage for persistence** | No backend, so client-side storage was needed. localStorage persists data after refresh/session close. |
+| **Single `noor_profile` key** | Both SettingsPage and UserProfile use the same localStorage key, so changes auto-sync. |
 
 ### 5.3 Data Flow
 
@@ -123,78 +123,78 @@ Component Rerenders        Page Refresh
 UI Updated              useState reads localStorage
 ```
 
-**Example:** Settings page mein name change kiya → `setFullName()` → localStorage set → UserProfile bhi wahi key read karta hai → dono jagah naam update.
+**Example:** Changing name in Settings → `setFullName()` → localStorage set → UserProfile reads the same key → name updates everywhere.
 
 ---
 
-## 6. Features Explanation (Kya Kya Banaya?)
+## 6. Features Explanation
 
 ### 6.1 Dashboard (App.jsx)
-**Kya hai:** Login ke baad dikhne wala main screen.  
-**Kya karta hai:**
-- Upcoming bookings dikhata hai (trial data localStorage se)
+**What it is:** Main screen shown after login.  
+**What it does:**
+- Shows upcoming bookings (trial data from localStorage)
 - Today's inspiration section (moodboard preview)
 - Quick actions: Plan Wedding, Browse Artists, AI Tools, Wallet
-- Search bar — bookings, artists, moodboards sab filter karta hai
+- Search bar — filters bookings, artists, and moodboards
 - Notifications panel — Bell icon, categories: Bookings/Offers/Reminders
 - Reviews tab — Write review (localStorage save), delete, Given/Received filter
 - Wedding countdown + checklist progress
 
 ### 6.2 Bridal Planner (BridalPlanner.jsx)
-**Kya hai:** Step-by-step wedding planning wizard.  
-**Kyu banaya:** Brides ko ek structured flow dena jo unki wedding plan karne mein guide kare.  
+**What it is:** Step-by-step wedding planning wizard.  
+**Why it was built:** To provide brides with a structured flow that guides their wedding planning.  
 **Flow:**
 - Step 1: Wedding type select (Traditional, Destination, Modern, Court, Pre-Wedding)
-- Step 2: Month, venue, style, budget, color palette choose
-- Step 3: AI-style matching → matched artist list generate
-- Step 4: Artists browse, filter, compare, cost estimate
+- Step 2: Month, venue, style, budget, color palette selection
+- Step 3: AI-style matching → generates matched artist list
+- Step 4: Browse, filter, compare artists, cost estimate
 - Step 5: Artist detail → services, packages → Book Now
 
 ### 6.3 Artists & Salons (ArtistsSalons.jsx)
-**Kya hai:** Bridal vendor marketplace.  
+**What it is:** Bridal vendor marketplace.  
 **Features:**
 - Artist cards with rating, location, match %, price
 - Category tabs (All, Makeup, Hair, Mehndi, Outfit)
 - Sort by Match %, Price, Rating, Experience
-- AI Search — natural language query se artists search
+- AI Search — natural language query for artist search
 - Portfolio carousel (images + videos)
 - Availability checker with time slots
 - Book Now flow (date → services → add-ons → confirm)
 - Share profile + More options dropdown
 
 ### 6.4 Booking Details (BookingDetails.jsx)
-**Kya hai:** Booking ke baad management screen.  
+**What it is:** Post-booking management screen.  
 **Features:**
 - Booking summary (artist, service, date, price, status)
 - Reschedule — Change date/time modal + reason selector
 - Cancel booking → degraded UI with red banner
-- Add-ons — post-booking services add karo
+- Add-ons — post-booking service additions
 - Invoice download as .txt file
 - Status: Confirmed / Pending / Cancelled
 
 ### 6.5 AI Tools (AiToolsContainer.jsx)
-**Kya hai:** 6 AI-powered bridal tools ek hi screen mein.  
+**What it is:** 6 AI-powered bridal tools in one screen.  
 **Tools:**
 1. **Digital Twin** — AI bridal avatar with 6 makeup looks (Royal, Minimal, Glam, Boho, Classic, Modern)
 2. **Makeup Lookbook** — Browse/customize makeup styles with lip, eye, hair, jewellery breakdown
-3. **AI Chat** — OpenRouter API se wedding questions poocho
+3. **AI Chat** — Ask wedding questions via OpenRouter API
 4. **Face Analyzer** — Face shape analysis + personalized recommendations
-5. **Budget Optimizer** — Budget daalo → vendor suggestions
+5. **Budget Optimizer** — Input budget → vendor suggestions
 6. **Spot Eraser** — Photo upload/edit with zoom
 
 ### 6.6 Moodboard (MyMoodboard.jsx)
-**Kya hai:** Visual inspiration board manager.  
+**What it is:** Visual inspiration board manager.  
 **Features:**
 - Grid view with images, titles, likes, pin counts
 - Create Board — name, description, category tags, cover image
-- Edit Board — details update, cover change
+- Edit Board — update details, change cover
 - Like/Unlike — localStorage persist
 - Sort: Newest / Oldest / Most Liked
 - More Menu: Edit, Duplicate, Share (copy link), Delete
 - AI Generate button (toast placeholder)
 
 ### 6.7 Messages (Messages.jsx)
-**Kya hai:** Chat simulation.  
+**What it is:** Chat simulation.  
 **Features:**
 - Conversation list with avatars, last message, unread count
 - Chat bubbles, timestamps, file attachments
@@ -204,7 +204,7 @@ UI Updated              useState reads localStorage
 - Search conversations filter
 
 ### 6.8 Wallet & Offers (WalletOffers.jsx)
-**Kya hai:** Financial dashboard.  
+**What it is:** Financial dashboard.  
 **Features:**
 - Balance display + Add Money form
 - Transaction history with dates
@@ -214,7 +214,7 @@ UI Updated              useState reads localStorage
 - View All Offers toggle
 
 ### 6.9 Settings (SettingsPage.jsx)
-**Kya hai:** Account management.  
+**What it is:** Account management.  
 **Tabs:**
 - **Account** — Name, phone (+91), email, DOB, location, language
 - **Notifications** — Email/Push/SMS/WhatsApp toggles
@@ -225,7 +225,7 @@ UI Updated              useState reads localStorage
 - Theme toggle (Dark/Light), Save Changes, Logout
 
 ### 6.10 User Profile (UserProfile.jsx)
-**Kya hai:** Personal profile page.  
+**What it is:** Personal profile page.  
 **Features:**
 - Profile photo upload/change (localStorage save)
 - Inline name editing
@@ -235,23 +235,23 @@ UI Updated              useState reads localStorage
 - Refer & Earn, Chat with Support
 
 ### 6.11 Package Details (PackageDetails.jsx)
-**Kya hai:** Service package booking flow.  
+**What it is:** Service package booking flow.  
 **Steps:**
-1. Package details, date/time, quantity select
-2. Review order, promo code apply
+1. Package details, date/time, quantity selection
+2. Review order, promo code application
 3. Payment processing → Booking Confirmed
 
 ### 6.12 Login Page (LoginPage.jsx)
-**Kya hai:** Authentication UI.  
+**What it is:** Authentication UI.  
 **Features:** Email/Password login, Google login placeholder, Remember me, Register link
 
 ---
 
-## 7. Data Persistence (Data Kaise Store hota hai?)
+## 7. Data Persistence
 
-Backend nahi hai isliye saara data **localStorage** mein store hota hai. Har key ka unique prefix `noor_` hai.
+Since there is no backend, all data is stored in **localStorage**. Each key uses the unique prefix `noor_`.
 
-| Key | Kya Store Karta Hai? | Kahan Use Hota Hai? |
+| Key | What Does It Store? | Where Is It Used? |
 |---|---|---|
 | `noor_logged_in` | Login session flag (true/false) | App.jsx |
 | `noor_dark_mode` | Dark/Light theme preference | App.jsx, SettingsPage |
@@ -276,16 +276,16 @@ UI Renders
 
 ---
 
-## 8. Design System (Look & Feel)
+## 8. Design System
 
 ### Colors
-- **Primary:** Maroon/Dark Red (`#4A0404`, `#6B1020`) — bridal elegance represent karta hai
-- **Accent:** Gold (`#C49F57`) — luxury aur celebration ka feel
+- **Primary:** Maroon/Dark Red (`#4A0404`, `#6B1020`) — represents bridal elegance
+- **Accent:** Gold (`#C49F57`) — conveys luxury and celebration
 - **Background:** Dark mode (#1a1a1a), Light mode (warm cream)
 - **Buttons:** Gold-on-maroon gradients
 
 ### Typography
-- **Headings:** Playfair Display (serif) — wedding elegance ke liye
+- **Headings:** Playfair Display (serif) — for wedding elegance
 - **Body:** Plus Jakarta Sans / Inter (sans-serif) — modern readability
 
 ### Visual Elements
@@ -296,7 +296,7 @@ UI Renders
 
 ---
 
-## 9. File Structure (Project Kaise Organized Hai?)
+## 9. File Structure
 
 ```
 BrideVerse AI/
@@ -305,7 +305,7 @@ BrideVerse AI/
 ├── vite.config.js              # Vite build configuration
 ├── package.json                # Dependencies list
 ├── eslint.config.js            # Code quality rules
-├── hackread.md                 # Yeh file — project documentation
+├── hackread.md                 # This file — project documentation
 │
 ├── public/                     # Static images (25 files)
 │   ├── bridal_lehenga.png
@@ -349,20 +349,20 @@ BrideVerse AI/
 
 ---
 
-## 10. How to Run (Project Chalaneka Tarika)
+## 10. How to Run
 
 ```bash
-# Step 1: Dependencies install karo
+# Step 1: Install dependencies
 npm install
 
-# Step 2: Development server start karo
+# Step 2: Start development server
 npm run dev
 # → Browser automatically opens at http://localhost:5173
 
-# Step 3: Production build ke liye
+# Step 3: Production build
 npm run build
 
-# Step 4: Build preview ke liye
+# Step 4: Preview the build
 npm run preview
 ```
 
@@ -370,27 +370,27 @@ npm run preview
 
 ## 11. Testing
 
-Abhi formal testing framework nahi hai (Jest/Cypress). Testing manual ki gayi hai:
-- Har button click karke check kiya (functional)
-- Build command run karke errors check kiye (`npm run build` → success)
-- localStorage persist verify kiya (refresh ke baad data check)
-- Responsive design check kiya (different screen sizes)
+No formal testing framework is in place yet (Jest/Cypress). Testing has been done manually:
+- Clicked every button to verify functionality
+- Ran build command to check for errors (`npm run build` → success)
+- Verified localStorage persistence (checked data after refresh)
+- Checked responsive design (different screen sizes)
 
 ---
 
-## 12. Challenges Faced (Kya Problems Aayi?)
+## 12. Challenges Faced
 
 | Challenge | Solution |
 |---|---|
-| **No backend** — saara data client-side store karna tha | localStorage use kiya, custom events (`profile_update`) se cross-component sync |
-| **Buttun kaam nahi kar rahe the** — 40+ buttons sirf toast dikha rahe the | Har button ko actual functionality di — modals, localStorage save, clipboard copy, navigation |
-| **Profile changes refresh pe lost ho jate the** | Har form field ka `useState` initializer localStorage se data read karta hai |
-| **125vh typo** — Messages page scroll break ho raha tha | `125vh` → `100vh` fix kiya |
-| **Review delete DOM manipulation tha** | Woh actual React state-based delete kiya |
+| **No backend** — all data had to be stored client-side | Used localStorage with custom events (`profile_update`) for cross-component sync |
+| **Non-functional buttons** — 40+ buttons only showed toasts | Gave each button actual functionality — modals, localStorage save, clipboard copy, navigation |
+| **Profile changes lost on refresh** | Each form field's `useState` initializer reads data from localStorage |
+| **125vh typo** — Messages page scroll was broken | Fixed `125vh` → `100vh` |
+| **Review delete used DOM manipulation** | Rewrote it as actual React state-based deletion |
 
 ---
 
-## 13. Future Scope (Aage Kya Kar Sakte Hain?)
+## 13. Future Scope
 
 | Phase | Features | Technology |
 |---|---|---|
@@ -404,7 +404,7 @@ Abhi formal testing framework nahi hai (Jest/Cypress). Testing manual ki gayi ha
 
 ## 14. Conclusion
 
-BrideVerse AI ek comprehensive bridal beauty marketplace hai jo modern frontend engineering principles demonstrate karta hai. 15+ interactive components, AI integration, dark mode, aur complete data persistence ke saath yeh ek functional prototype hai. Architecture deliberately modular aur clean rakha gaya hai taake bina backend ke bhi kaam kare, aur jab backend ready ho toh migrate karna easy ho.
+BrideVerse AI is a comprehensive bridal beauty marketplace that demonstrates modern frontend engineering principles. With 15+ interactive components, AI integration, dark mode, and complete data persistence, it is a functional prototype. The architecture is deliberately modular and clean so that it works without a backend, and migration will be easy once a backend is ready.
 
 ---
 
