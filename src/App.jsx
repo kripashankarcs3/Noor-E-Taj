@@ -201,70 +201,85 @@ function App() {
   const heroSlides = [
     { 
       id: 0, 
-      bg: 'linear-gradient(135deg, #160c0e 0%, #281419 60%, #3e1a22 100%)', 
+      bg: 'linear-gradient(135deg, #1a0510 0%, #3b0e1c 40%, #6b1a30 75%, #8b2040 100%)',
+      shimmer: 'radial-gradient(ellipse at 20% 50%, rgba(196,159,87,0.18) 0%, transparent 60%)',
+      tag: '✨ AI-Powered Bridal Platform',
       badges: [
-        { label: 'AI Powered', sub: 'Smart Recommendations', icon: '✨' },
-        { label: 'Expert Artists', sub: 'Verified & Trusted', icon: '👤' },
-        { label: 'Premium Experience', sub: 'Luxury, Personalized', icon: '👑' }
+        { label: 'Smart AI', sub: 'Personalised for You', icon: '🤖' },
+        { label: 'Verified Artists', sub: '500+ in Delhi', icon: '✓' },
+        { label: 'Luxury First', sub: 'Premium Experience', icon: '👑' }
       ],
-      title: 'Plan. Book. Glow.', 
-      subtitle: 'Your perfect bridal look starts here.', 
-      cta1: { label: 'Continue Planning', action: 'planner' }, 
-      cta2: { label: 'Ask Noor AI', action: 'ai-suite' }, 
+      title: 'Your Dream Wedding\nStarts Here.',
+      subtitle: 'AI-matched makeup artists, curated looks & seamless booking — all in one place built for Indian brides.',
+      cta1: { label: 'Start Planning', action: 'planner' }, 
+      cta2: { label: 'Try Noor AI', action: 'ai-suite' }, 
       img: '/bridal_lehenga.png', 
-      accent: '#c49f57' 
+      accent: '#e8c97a',
+      stat: { num: '10,000+', lbl: 'Happy Brides' }
     },
     { 
       id: 1, 
-      bg: 'linear-gradient(135deg, #0d0d12 0%, #171722 60%, #222233 100%)', 
+      bg: 'linear-gradient(135deg, #0a0a1a 0%, #12122e 40%, #1e1a4a 75%, #2a2060 100%)',
+      shimmer: 'radial-gradient(ellipse at 80% 30%, rgba(180,140,255,0.15) 0%, transparent 55%)',
+      tag: '🏷️ Limited Time Offer',
       badges: [
-        { label: 'Exclusive Couture', sub: 'Bridal Lehenga Sale', icon: '✨' },
-        { label: 'Up to 30% Off', sub: 'Limited Time Deals', icon: '🏷️' }
+        { label: 'Up to 30% Off', sub: 'Bridal Lehengas', icon: '💰' },
+        { label: 'Couture Labels', sub: 'Exclusive Collection', icon: '✨' }
       ],
-      title: 'Bridal Lehenga Sale', 
-      subtitle: 'Luxury bridal couture designed for your dream wedding. Get Up to 30% Off.', 
-      cta1: { label: 'Shop Now', action: 'marketplace' }, 
+      title: 'Bridal Couture\nSale is Live.',
+      subtitle: 'Dreaming of the perfect lehenga? Shop handpicked luxury bridal couture — discounted exclusively for Noor brides.',
+      cta1: { label: 'Shop the Sale', action: 'marketplace' }, 
       img: '/countdown_bride.png', 
-      accent: '#c49f57' 
+      accent: '#b89fff',
+      stat: { num: '30% Off', lbl: 'On Select Labels' }
     },
     { 
       id: 2, 
-      bg: 'linear-gradient(135deg, #101815 0%, #1b2e27 60%, #28443a 100%)', 
+      bg: 'linear-gradient(135deg, #071510 0%, #0e2a1c 40%, #15422c 75%, #1c5538 100%)',
+      shimmer: 'radial-gradient(ellipse at 70% 60%, rgba(100,220,150,0.12) 0%, transparent 55%)',
+      tag: '⭐ Top Rated in Delhi',
       badges: [
-        { label: 'Verified Artists', sub: 'Top Rated Experts', icon: '👤' },
-        { label: 'Luxury Salons', sub: 'Delhi Premium Studios', icon: '⭐' }
+        { label: 'Certified Artists', sub: 'Background Verified', icon: '🎨' },
+        { label: 'Luxury Studios', sub: 'Delhi NCR\'s Best', icon: '🏛️' }
       ],
-      title: 'Premium Makeup Artists', 
-      subtitle: 'Book top-rated, certified luxury makeup artists for your wedding day.', 
-      cta1: { label: 'Book Now', action: 'marketplace' }, 
+      title: 'Book Delhi\'s Best\nMakeup Artists.',
+      subtitle: 'From soft glam to heavy bridal — find, preview & instantly book the most sought-after artists in the city.',
+      cta1: { label: 'Browse Artists', action: 'marketplace' }, 
       img: '/luxury_salon.png', 
-      accent: '#c49f57' 
+      accent: '#5ee89a',
+      stat: { num: '4.9★', lbl: 'Average Rating' }
     },
     { 
       id: 3, 
-      bg: 'linear-gradient(135deg, #180c1e 0%, #2b1836 60%, #3e224e 100%)', 
+      bg: 'linear-gradient(135deg, #0e0818 0%, #1c1030 40%, #2e1850 75%, #3d2265 100%)',
+      shimmer: 'radial-gradient(ellipse at 30% 40%, rgba(220,160,255,0.14) 0%, transparent 55%)',
+      tag: '🤖 Powered by Noor AI',
       badges: [
-        { label: 'AI Powered', sub: 'Digital Twin Styling', icon: '✨' },
-        { label: 'Timeline Planner', sub: 'Personalized Schedule', icon: '📅' }
+        { label: 'Digital Twin', sub: 'Try Before You Book', icon: '🪞' },
+        { label: 'Smart Timeline', sub: 'Auto-Scheduled', icon: '📅' }
       ],
-      title: 'AI Bridal Planner', 
-      subtitle: 'Experience AI-powered personalized wedding planning to customize your timeline and look.', 
-      cta1: { label: 'Continue Planning', action: 'planner' }, 
+      title: 'Your AI Bridal\nPlanner is Ready.',
+      subtitle: 'Get a personalised wedding countdown, AI look previews & intelligent vendor suggestions — tailored to your style.',
+      cta1: { label: 'Open Planner', action: 'planner' }, 
       img: '/digital_twin_portrait.png', 
-      accent: '#c49f57' 
+      accent: '#d4a0ff',
+      stat: { num: '3 Min', lbl: 'Setup Your Plan' }
     },
     { 
       id: 4, 
-      bg: 'linear-gradient(135deg, #201710 0%, #35251a 60%, #4a3424 100%)', 
+      bg: 'linear-gradient(135deg, #1a0e06 0%, #30200e 40%, #4e3318 75%, #624020 100%)',
+      shimmer: 'radial-gradient(ellipse at 60% 20%, rgba(255,190,80,0.15) 0%, transparent 55%)',
+      tag: '⏳ Season Special',
       badges: [
-        { label: 'Limited Time Offers', sub: 'Exclusive Season Deals', icon: '⏳' },
-        { label: 'Flat 15% Off', sub: 'On Luxury Bookings', icon: '💎' }
+        { label: 'Flat 15% Off', sub: 'Luxury Bookings', icon: '💎' },
+        { label: 'Wallet Cashback', sub: 'Instant Credits', icon: '💳' }
       ],
-      title: 'Wedding Season Offers', 
-      subtitle: 'Unlock limited-time luxury bridal deals and packages exclusively at Noor-E-Taj.', 
-      cta1: { label: 'Explore Offers', action: 'wallet' }, 
+      title: 'Wedding Season\nOffers Are Here.',
+      subtitle: 'Limited-time packages on bridal makeup, mehendi, hair & styling — crafted for the season\'s most beautiful brides.',
+      cta1: { label: 'Claim Offers', action: 'wallet' }, 
       img: '/exclusive_banner.png', 
-      accent: '#c49f57' 
+      accent: '#ffbe50',
+      stat: { num: '15% Off', lbl: 'On All Packages' }
     }
   ];
   const [heroIdx, setHeroIdx] = useState(0);
@@ -532,52 +547,78 @@ function App() {
                     className={`db-carousel-slide ${index === heroIdx ? 'active' : ''}`}
                     style={{ background: slide.bg }}
                   >
+                    {/* Shimmer overlay */}
+                    <div className="db-slide-shimmer" style={{ background: slide.shimmer }} />
+
                     {/* Left content */}
                     <div className="db-cd-unified-left">
+                      {/* Tag pill */}
+                      {slide.tag && (
+                        <div className="db-slide-tag" style={{ color: slide.accent, borderColor: `${slide.accent}40`, background: `${slide.accent}12` }}>
+                          {slide.tag}
+                        </div>
+                      )}
                       {/* Badges row */}
                       {slide.badges && (
                         <div className="db-slide-badges">
                           {slide.badges.map((b, i) => (
-                            <div key={i} className="db-slide-badge">
+                            <div key={i} className="db-slide-badge" style={{ borderColor: `${slide.accent}35`, background: `${slide.accent}0d` }}>
                               <span className="db-slide-badge-icon">{b.icon}</span>
                               <div>
-                                <div className="db-slide-badge-label">{b.label}</div>
+                                <div className="db-slide-badge-label" style={{ color: slide.accent }}>{b.label}</div>
                                 <div className="db-slide-badge-sub">{b.sub}</div>
                               </div>
                             </div>
                           ))}
                         </div>
                       )}
-                      {/* Title & Subtitle */}
+                      {/* Title */}
                       <div>
-                        <h2 className="db-slide-title">{slide.title}</h2>
+                        <h2 className="db-slide-title">
+                          {slide.title.split('\n').map((line, i) => (
+                            <span key={i}>
+                              {i === 0 ? line : <><br/><span style={{ color: slide.accent }}>{line}</span></>}
+                            </span>
+                          ))}
+                        </h2>
                         <p className="db-slide-subtitle">{slide.subtitle}</p>
                       </div>
-                      {/* CTA Buttons */}
-                      <div className="db-slide-ctas">
-                        {slide.cta1 && (
-                          <button
-                            className="db-slide-btn-primary"
-                            onClick={() => setActiveTab(slide.cta1.action)}
-                          >
-                            {slide.cta1.label} →
-                          </button>
+                      {/* Stat + CTA row */}
+                      <div className="db-slide-bottom-row">
+                        {slide.stat && (
+                          <div className="db-slide-stat">
+                            <span className="db-slide-stat-num" style={{ color: slide.accent }}>{slide.stat.num}</span>
+                            <span className="db-slide-stat-lbl">{slide.stat.lbl}</span>
+                          </div>
                         )}
-                        {slide.cta2 && (
-                          <button
-                            className="db-slide-btn-secondary"
-                            onClick={() => { setActiveTab(slide.cta2.action); setAiSuiteActiveTool('copilot'); }}
-                          >
-                            {slide.cta2.label}
-                          </button>
-                        )}
+                        <div className="db-slide-ctas">
+                          {slide.cta1 && (
+                            <button
+                              className="db-slide-btn-primary"
+                              style={{ background: `linear-gradient(135deg, ${slide.accent} 0%, ${slide.accent}bb 100%)` }}
+                              onClick={() => setActiveTab(slide.cta1.action)}
+                            >
+                              {slide.cta1.label} →
+                            </button>
+                          )}
+                          {slide.cta2 && (
+                            <button
+                              className="db-slide-btn-secondary"
+                              style={{ color: slide.accent, borderColor: `${slide.accent}55` }}
+                              onClick={() => { setActiveTab(slide.cta2.action); setAiSuiteActiveTool('copilot'); }}
+                            >
+                              {slide.cta2.label}
+                            </button>
+                          )}
+                        </div>
                       </div>
                     </div>
+
                     {/* Right image */}
                     <div className="db-cd-unified-right">
                       <img src={slide.img} alt={slide.title} className="db-cd-unified-img" />
-                      {/* Decorative gold overlay glow */}
                       <div className="db-slide-img-glow" />
+                      <div className="db-slide-img-bottom-fade" />
                     </div>
                   </div>
                 ))}
