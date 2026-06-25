@@ -3,7 +3,7 @@ import {
   LayoutDashboard, Sparkles, Scissors, Calendar, Image as ImageIcon, Heart, 
   MessageCircle, Star, User, Settings, Bell, ChevronDown, Search, Send, 
   CreditCard, Users, UserCheck, Headset, ArrowRight, ArrowLeft, Moon, Sun,
-  MapPin, Pencil, Check, Circle, Crown, ClipboardCheck
+  MapPin, Pencil, Check, Circle, Crown, ClipboardCheck, Wallet
 } from 'lucide-react';
 import BridalPlanner from './components/BridalPlanner';
 import ArtistsSalons from './components/ArtistsSalons';
@@ -59,6 +59,7 @@ function App() {
   const toggleDarkMode = () => {
     setDarkMode(prev => !prev);
   };
+
   const [aiSuiteActiveTool, setAiSuiteActiveTool] = useState('twin');
   const [showNotifications, setShowNotifications] = useState(false);
   const [notifTab, setNotifTab] = useState('All');
@@ -200,57 +201,93 @@ function App() {
   const heroSlides = [
     { 
       id: 0, 
-      bg: 'linear-gradient(135deg, #050505 0%, #150a0d 60%, #2b0e18 100%)', 
+      bg: 'linear-gradient(135deg, #160c0e 0%, #281419 60%, #3e1a22 100%)', 
       badges: [
-        { label: 'AI Powered', icon: '✨' },
-        { label: 'Expert Artists', icon: '👤' },
-        { label: 'Premium Experience', icon: '👑' }
+        { label: 'AI Powered', sub: 'Smart Recommendations', icon: '✨' },
+        { label: 'Expert Artists', sub: 'Verified & Trusted', icon: '👤' },
+        { label: 'Premium Experience', sub: 'Luxury, Personalized', icon: '👑' }
       ],
       title: 'Plan. Book. Glow.', 
       subtitle: 'Your perfect bridal look starts here.', 
       cta1: { label: 'Continue Planning', action: 'planner' }, 
       cta2: { label: 'Ask Noor AI', action: 'ai-suite' }, 
       img: '/bridal_lehenga.png', 
-      accent: '#D4AF37' 
+      accent: '#c49f57' 
     },
     { 
       id: 1, 
-      bg: 'linear-gradient(135deg, #050505 0%, #0d0d12 60%, #1a1a24 100%)', 
+      bg: 'linear-gradient(135deg, #0d0d12 0%, #171722 60%, #222233 100%)', 
       badges: [
-        { label: 'New Collection', icon: '🌙' },
-        { label: 'Dior Inspired', icon: '🌸' }
+        { label: 'Exclusive Couture', sub: 'Bridal Lehenga Sale', icon: '✨' },
+        { label: 'Up to 30% Off', sub: 'Limited Time Deals', icon: '🏷️' }
       ],
-      title: 'Midnight Elegance', 
-      subtitle: 'Shimmering dark-tone bridal looks for the modern bride.', 
-      cta1: { label: 'Explore Moodboard', action: 'moodboard' }, 
-      cta2: { label: 'Try AI Suite', action: 'ai-suite' }, 
+      title: 'Bridal Lehenga Sale', 
+      subtitle: 'Luxury bridal couture designed for your dream wedding. Get Up to 30% Off.', 
+      cta1: { label: 'Shop Now', action: 'marketplace' }, 
       img: '/countdown_bride.png', 
-      accent: '#D4AF37' 
+      accent: '#c49f57' 
     },
     { 
       id: 2, 
-      bg: 'linear-gradient(135deg, #050505 0%, #1c150c 60%, #2e2010 100%)', 
+      bg: 'linear-gradient(135deg, #101815 0%, #1b2e27 60%, #28443a 100%)', 
       badges: [
-        { label: 'Elite Member', icon: '👑' },
-        { label: 'Premium Quality', icon: '💎' }
+        { label: 'Verified Artists', sub: 'Top Rated Experts', icon: '👤' },
+        { label: 'Luxury Salons', sub: 'Delhi Premium Studios', icon: '⭐' }
       ],
-      title: 'Luxury Salon Bookings', 
-      subtitle: 'Delhi\'s top-rated bridal studios — book in one click.', 
-      cta1: { label: 'Book Salon', action: 'marketplace' }, 
-      cta2: { label: 'View Offers', action: 'wallet' }, 
+      title: 'Premium Makeup Artists', 
+      subtitle: 'Book top-rated, certified luxury makeup artists for your wedding day.', 
+      cta1: { label: 'Book Now', action: 'marketplace' }, 
       img: '/luxury_salon.png', 
-      accent: '#D4AF37' 
+      accent: '#c49f57' 
+    },
+    { 
+      id: 3, 
+      bg: 'linear-gradient(135deg, #180c1e 0%, #2b1836 60%, #3e224e 100%)', 
+      badges: [
+        { label: 'AI Powered', sub: 'Digital Twin Styling', icon: '✨' },
+        { label: 'Timeline Planner', sub: 'Personalized Schedule', icon: '📅' }
+      ],
+      title: 'AI Bridal Planner', 
+      subtitle: 'Experience AI-powered personalized wedding planning to customize your timeline and look.', 
+      cta1: { label: 'Continue Planning', action: 'planner' }, 
+      img: '/digital_twin_portrait.png', 
+      accent: '#c49f57' 
+    },
+    { 
+      id: 4, 
+      bg: 'linear-gradient(135deg, #201710 0%, #35251a 60%, #4a3424 100%)', 
+      badges: [
+        { label: 'Limited Time Offers', sub: 'Exclusive Season Deals', icon: '⏳' },
+        { label: 'Flat 15% Off', sub: 'On Luxury Bookings', icon: '💎' }
+      ],
+      title: 'Wedding Season Offers', 
+      subtitle: 'Unlock limited-time luxury bridal deals and packages exclusively at Noor-E-Taj.', 
+      cta1: { label: 'Explore Offers', action: 'wallet' }, 
+      img: '/exclusive_banner.png', 
+      accent: '#c49f57' 
     }
   ];
   const [heroIdx, setHeroIdx] = useState(0);
   const heroTimer = useRef(null);
   useEffect(() => {
-    heroTimer.current = setInterval(() => { setHeroIdx(prev => (prev + 1) % heroSlides.length); }, 3000);
+    heroTimer.current = setInterval(() => { setHeroIdx(prev => (prev + 1) % heroSlides.length); }, 4500);
     return () => clearInterval(heroTimer.current);
   }, [heroSlides.length]);
   const restartHeroTimer = () => {
     clearInterval(heroTimer.current);
-    heroTimer.current = setInterval(() => { setHeroIdx(prev => (prev + 1) % heroSlides.length); }, 3000);
+    heroTimer.current = setInterval(() => { setHeroIdx(prev => (prev + 1) % heroSlides.length); }, 4500);
+  };
+  const handlePrevSlide = () => {
+    setHeroIdx(prev => (prev - 1 + heroSlides.length) % heroSlides.length);
+    restartHeroTimer();
+  };
+  const handleNextSlide = () => {
+    setHeroIdx(prev => (prev + 1) % heroSlides.length);
+    restartHeroTimer();
+  };
+  const handleDotClick = (idx) => {
+    setHeroIdx(idx);
+    restartHeroTimer();
   };
 
   if (!isLoggedIn) {
@@ -412,8 +449,8 @@ function App() {
         <div className="topbar">
           {/* Welcome back segment */}
           <div className="topbar-welcome">
-            <h2 className="topbar-welcome-top" style={{ fontSize: '1.8rem', fontFamily: 'var(--font-heading)', color: 'var(--sidebar-bg)' }}>
-              Hello, {userProfile.fullName ? userProfile.fullName.split(' ')[0] : 'Priya'}! <span style={{ color: 'var(--gold-accent)' }}>{userProfile.membership === 'Elite' && '👑'}✨</span>
+            <h2 className="topbar-welcome-top">
+              Hello, {userProfile.fullName ? userProfile.fullName.split(' ')[0] : 'Priya'}! <span className="topbar-welcome-sparkle">✨</span>
             </h2>
             <span className="topbar-welcome-sub">Let's make your bridal journey magical!</span>
           </div>
@@ -484,98 +521,143 @@ function App() {
         {activeTab === 'dashboard' && (
           <div className="animate-fade-in">
             
-            {/* Row 1: Countdown Card + Ask Noor AI */}
-            <div className="dashboard-row-1">
+            {/* ── ROW 1: HERO SECTION ── */}
+            <div className="db-hero-row">
 
-              {/* 1. Your Wedding Countdown */}
-              <div className="countdown-card-new">
-                <div className="countdown-info-new">
-                  <div className="countdown-lbl-new">
-                    <Calendar size={13} style={{ color: '#a76b40' }} /> YOUR WEDDING COUNTDOWN
+              {/* LEFT — Hero Carousel Section */}
+              <div className="db-hero-carousel">
+                {heroSlides.map((slide, index) => (
+                  <div
+                    key={slide.id}
+                    className={`db-carousel-slide ${index === heroIdx ? 'active' : ''}`}
+                    style={{ background: slide.bg }}
+                  >
+                    {/* Left content */}
+                    <div className="db-cd-unified-left">
+                      {/* Badges row */}
+                      {slide.badges && (
+                        <div className="db-slide-badges">
+                          {slide.badges.map((b, i) => (
+                            <div key={i} className="db-slide-badge">
+                              <span className="db-slide-badge-icon">{b.icon}</span>
+                              <div>
+                                <div className="db-slide-badge-label">{b.label}</div>
+                                <div className="db-slide-badge-sub">{b.sub}</div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                      {/* Title & Subtitle */}
+                      <div>
+                        <h2 className="db-slide-title">{slide.title}</h2>
+                        <p className="db-slide-subtitle">{slide.subtitle}</p>
+                      </div>
+                      {/* CTA Buttons */}
+                      <div className="db-slide-ctas">
+                        {slide.cta1 && (
+                          <button
+                            className="db-slide-btn-primary"
+                            onClick={() => setActiveTab(slide.cta1.action)}
+                          >
+                            {slide.cta1.label} →
+                          </button>
+                        )}
+                        {slide.cta2 && (
+                          <button
+                            className="db-slide-btn-secondary"
+                            onClick={() => { setActiveTab(slide.cta2.action); setAiSuiteActiveTool('copilot'); }}
+                          >
+                            {slide.cta2.label}
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                    {/* Right image */}
+                    <div className="db-cd-unified-right">
+                      <img src={slide.img} alt={slide.title} className="db-cd-unified-img" />
+                      {/* Decorative gold overlay glow */}
+                      <div className="db-slide-img-glow" />
+                    </div>
                   </div>
-                  <div className="countdown-big-num-row">
-                    <span className="countdown-big-num">72</span>
-                    <span className="countdown-big-lbl">Days To Forever ❤️</span>
-                  </div>
-                  <div className="countdown-date-new">
-                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}><Calendar size={13} style={{ color: '#a76b40' }} /> 22 Jan, 2026</span>
-                    <span style={{ margin: '0 4px', opacity: 0.5 }}>|</span>
-                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}><MapPin size={13} style={{ color: '#a76b40' }} /> Delhi</span>
-                  </div>
-                  <div className="countdown-btns">
-                    <button className="btn-countdown-maroon" onClick={() => setActiveTab('planner')}>
-                      View Wedding Plan <ArrowRight size={13} />
-                    </button>
-                    <button className="btn-countdown-edit" onClick={() => setActiveTab('planner')}>
-                      <Pencil size={12} /> Edit Details
-                    </button>
-                  </div>
-                </div>
+                ))}
 
-                {/* Right Column: Bride Image (Fits perfectly in 2-column grid and doesn't overlap text) */}
-                <div style={{ position: 'relative', height: '100%', overflow: 'hidden' }}>
-                  <img 
-                    src="/login_bride_new.png" 
-                    alt="Bride" 
-                    style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center 15%' }} 
-                  />
-                  {/* Subtle fade overlay on the left edge of the image to blend it with the info container */}
-                  <div style={{ position: 'absolute', inset: '0 0 0 -1px', background: 'linear-gradient(90deg, #FBF4F0 0%, rgba(251, 244, 240, 0.4) 15%, rgba(251, 244, 240, 0) 50%)', pointerEvents: 'none' }}></div>
+                {/* Left/Right Controls */}
+                <button
+                  className="db-carousel-arrow left"
+                  onClick={handlePrevSlide}
+                  aria-label="Previous slide"
+                >
+                  <ArrowLeft size={16} />
+                </button>
+                <button
+                  className="db-carousel-arrow right"
+                  onClick={handleNextSlide}
+                  aria-label="Next slide"
+                >
+                  <ArrowRight size={16} />
+                </button>
+
+                {/* Pagination Indicator Dots */}
+                <div className="db-carousel-dots">
+                  {heroSlides.map((_, index) => (
+                    <span
+                      key={index}
+                      className={`db-carousel-dot ${index === heroIdx ? 'active' : ''}`}
+                      onClick={() => handleDotClick(index)}
+                    />
+                  ))}
                 </div>
               </div>
 
-              {/* Ask Noor AI Card (right) */}
-              <div className="ask-noor-card-new">
-                <div>
-                  <h3 className="ask-noor-title-new" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
-                    <Sparkles size={16} style={{ color: 'var(--gold-accent)' }} /> Ask Noor AI <Sparkles size={16} style={{ color: 'var(--gold-accent)' }} />
-                  </h3>
-                  <p className="ask-noor-sub-new" style={{ textAlign: 'center' }}>Your personal bridal assistant</p>
-                  
-                  <div className="ask-noor-input-wrapper" style={{ margin: '12px 0 8px 0' }}>
-                    <input 
-                      type="text" 
-                      className="ask-noor-input-new" 
-                      placeholder="How can I help you today?" 
-                      value={askNoorInput}
-                      onChange={e => setAskNoorInput(e.target.value)}
-                    />
-                    <button className="ask-noor-send-btn" onClick={() => { setAskNoorInput(''); setActiveTab('ai-suite'); setAiSuiteActiveTool('copilot'); }}>
-                      <Send size={12} />
-                    </button>
-                  </div>
+              {/* RIGHT — Ask Noor AI (white card) */}
+              <div className="db-hero-ai">
+                <div className="db-ai-header">
+                  <Sparkles size={14} className="db-ai-sparkle-gold" />
+                  <span className="db-ai-title">Ask Noor AI</span>
+                  <Sparkles size={12} className="db-ai-sparkle-gold" />
                 </div>
+                <p className="db-ai-sub">Your personal bridal assistant</p>
 
-                <div className="ask-noor-q-list">
-                  <div className="ask-noor-pill-item" onClick={() => { setActiveTab('ai-suite'); setAiSuiteActiveTool('copilot'); }}>
-                    <span className="ask-noor-pill-icon"><Sparkles size={14} /></span>
-                    <span>Find my bridal style</span>
-                  </div>
-                  <div className="ask-noor-pill-item" onClick={() => { setActiveTab('ai-suite'); setAiSuiteActiveTool('copilot'); }}>
-                    <span className="ask-noor-pill-icon"><User size={14} /></span>
-                    <span>Match me with artists</span>
-                  </div>
-                  <div className="ask-noor-pill-item" onClick={() => { setActiveTab('ai-suite'); setAiSuiteActiveTool('copilot'); }}>
-                    <span className="ask-noor-pill-icon"><Calendar size={14} /></span>
-                    <span>Create beauty timeline</span>
-                  </div>
-                  <div className="ask-noor-pill-item" onClick={() => { setActiveTab('ai-suite'); setAiSuiteActiveTool('copilot'); }}>
-                    <span className="ask-noor-pill-icon"><CreditCard size={14} /></span>
-                    <span>Help plan my budget</span>
-                  </div>
-                </div>
-
-                <div>
-                  <button className="btn-maroon-chat" onClick={() => { setActiveTab('ai-suite'); setAiSuiteActiveTool('copilot'); }}>
-                    Chat with Noor AI <ArrowRight size={13} />
+                <div className="db-ai-input-row">
+                  <input
+                    type="text"
+                    className="db-ai-input"
+                    placeholder="How can I help you today?"
+                    value={askNoorInput}
+                    onChange={e => setAskNoorInput(e.target.value)}
+                    onKeyDown={e => { if (e.key === 'Enter') { setActiveTab('ai-suite'); setAiSuiteActiveTool('copilot'); } }}
+                  />
+                  <button className="db-ai-send" onClick={() => { setActiveTab('ai-suite'); setAiSuiteActiveTool('copilot'); }}>
+                    <Send size={11} />
                   </button>
-                  <div className="ask-noor-footer-text">Powered by Advanced AI</div>
                 </div>
+
+                <div className="db-ai-qs">
+                  {[
+                    { icon: <Sparkles size={14} />, text: 'Find my bridal style' },
+                    { icon: <Users size={14} />, text: 'Match me with artists' },
+                    { icon: <Calendar size={14} />, text: 'Create beauty timeline' },
+                    { icon: <Wallet size={14} />, text: 'Help me plan my budget' },
+                  ].map((q, i) => (
+                    <div key={i} className="db-ai-q-row"
+                      onClick={() => { setAskNoorInput(q.text); setActiveTab('ai-suite'); setAiSuiteActiveTool('copilot'); }}>
+                      <span className="db-ai-q-icon">{q.icon}</span>
+                      <span className="db-ai-q-text">{q.text}</span>
+                    </div>
+                  ))}
+                </div>
+
+                <button className="db-ai-chat-btn"
+                  onClick={() => { setActiveTab('ai-suite'); setAiSuiteActiveTool('copilot'); }}>
+                  Chat with Noor AI &rarr;
+                </button>
+                <div className="db-ai-powered">Powered by Advanced AI</div>
               </div>
 
             </div>
 
-            {/* Row 2: Readiness, AI Recommended, Bookings */}
+            {/* Row 2: AI Recommended + Bookings + Exclusive Offer */}
             <div className="dashboard-row-2">
 
               {/* 1. Bridal Readiness */}
@@ -595,160 +677,128 @@ function App() {
                       <div className="readiness-lbl-text">Ready</div>
                     </div>
                   </div>
-
                   <div className="readiness-checklist">
-                    <div className="readiness-check-item">
-                      <div className="readiness-item-left">
-                        <div className="readiness-item-icon-box">
-                          <ClipboardCheck size={12} />
+                    {[
+                      { label: 'Beauty Plan', done: true },
+                      { label: 'Looks Finalized', done: false },
+                      { label: 'Bookings', done: true },
+                      { label: 'Outfits & Styling', done: false },
+                    ].map(item => (
+                      <div key={item.label} className="readiness-check-item">
+                        <div className="readiness-item-left">
+                          <div className="readiness-item-icon-box"><ClipboardCheck size={12} /></div>
+                          <span>{item.label}</span>
                         </div>
-                        <span>Beauty Plan</span>
+                        {item.done
+                          ? <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 16, height: 16, background: '#2ecc71', borderRadius: '50%', color: '#fff' }}><Check size={10} strokeWidth={3} /></span>
+                          : <span style={{ display: 'inline-flex', width: 16, height: 16, border: '1.5px solid #f39c12', borderRadius: '50%' }} />
+                        }
                       </div>
-                      <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '16px', height: '16px', backgroundColor: '#2ecc71', borderRadius: '50%', color: '#ffffff' }}>
-                        <Check size={10} strokeWidth={3} />
-                      </span>
-                    </div>
-                    <div className="readiness-check-item">
-                      <div className="readiness-item-left">
-                        <div className="readiness-item-icon-box">
-                          <ClipboardCheck size={12} />
-                        </div>
-                        <span>Looks Finalized</span>
-                      </div>
-                      <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '16px', height: '16px', border: '1.5px solid #f39c12', borderRadius: '50%' }}>
-                      </span>
-                    </div>
-                    <div className="readiness-check-item">
-                      <div className="readiness-item-left">
-                        <div className="readiness-item-icon-box">
-                          <ClipboardCheck size={12} />
-                        </div>
-                        <span>Bookings</span>
-                      </div>
-                      <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '16px', height: '16px', backgroundColor: '#2ecc71', borderRadius: '50%', color: '#ffffff' }}>
-                        <Check size={10} strokeWidth={3} />
-                      </span>
-                    </div>
-                    <div className="readiness-check-item">
-                      <div className="readiness-item-left">
-                        <div className="readiness-item-icon-box">
-                          <ClipboardCheck size={12} />
-                        </div>
-                        <span>Outfits & Styling</span>
-                      </div>
-                      <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '16px', height: '16px', border: '1.5px solid #f39c12', borderRadius: '50%' }}>
-                      </span>
-                    </div>
+                    ))}
                   </div>
                 </div>
-
-                <button className="btn-readiness-wide" onClick={() => setActiveTab('planner')}>
-                  View Full Plan &rarr;
-                </button>
+                <button className="btn-readiness-wide" onClick={() => setActiveTab('planner')}>View Full Checklist →</button>
               </div>
-
-              {/* 2. AI Recommended For You */}
-              <div className="dashboard-card-sec" style={{ position: 'relative' }}>
-                <div className="card-sec-header">
-                  <h3 className="card-sec-title" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                    <Sparkles size={16} style={{ color: 'var(--gold-accent)' }} /> AI Recommended For You
+              <div className="dashboard-card-sec" style={{ position: 'relative', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', padding: '12px' }}>
+                <div className="card-sec-header" style={{ marginBottom: '8px' }}>
+                  <h3 className="card-sec-title" style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '0.85rem' }}>
+                    <Sparkles size={14} style={{ color: 'var(--gold-accent)' }} /> AI Recommended For You
                   </h3>
                   <span 
                     onClick={() => setActiveTab('marketplace')} 
-                    style={{ fontSize: '0.75rem', color: 'var(--maroon-btn)', cursor: 'pointer', textDecoration: 'underline' }}
+                    style={{ fontSize: '0.7rem', color: 'var(--maroon-btn)', cursor: 'pointer', textDecoration: 'underline' }}
                   >
                     View All
                   </span>
                 </div>
 
-                <div className="carousel-wrapper">
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '8px', flex: 1 }}>
                   {/* Card 1 */}
-                  <div className="recommended-artist-card" style={{ cursor: 'pointer' }} onClick={() => setActiveTab('marketplace')}>
-                    <div className="recommended-artist-img-wrapper">
-                      <img src="/digital_twin_portrait.png" alt="Poonam Rawat" className="recommended-artist-img" />
-                      <span className="recommended-match-badge">98% Match</span>
+                  <div className="recommended-artist-card-new" onClick={() => setActiveTab('marketplace')}>
+                    <div className="recommended-artist-img-wrapper-new">
+                      <img src="/digital_twin_portrait.png" alt="Poonam Rawat" className="recommended-artist-img-new" />
+                      <span className="recommended-match-badge-new">Most Booked</span>
                     </div>
-                    <div className="recommended-artist-info">
-                      <h4 className="recommended-artist-name">Poonam Rawat</h4>
-                      <p className="recommended-artist-category">Celebrity Makeup Artist</p>
-                      <div className="recommended-artist-meta">
-                        <span className="recommended-artist-rating">★ 4.9 (125)</span>
-                        <span className="recommended-artist-price">₹28,000 onwards</span>
+                    <div className="recommended-artist-info-new">
+                      <h4 className="recommended-artist-name-new">Poonam Rawat</h4>
+                      <p className="recommended-artist-category-new">Celebrity Bridal Artist</p>
+                      <div className="recommended-artist-meta-new">
+                        <span className="recommended-artist-rating-new">★ 4.9 (125)</span>
+                        <span className="recommended-artist-price-new">₹28,000 onwards</span>
                       </div>
                     </div>
                   </div>
 
                   {/* Card 2 */}
-                  <div className="recommended-artist-card" style={{ cursor: 'pointer' }} onClick={() => setActiveTab('marketplace')}>
-                    <div className="recommended-artist-img-wrapper">
-                      <img src="/recommend_salon1.png" alt="Chandni Singh" className="recommended-artist-img" />
-                      <span className="recommended-match-badge">93% Match</span>
+                  <div className="recommended-artist-card-new" onClick={() => setActiveTab('marketplace')}>
+                    <div className="recommended-artist-img-wrapper-new">
+                      <img src="/recommend_salon1.png" alt="Chandni Singh" className="recommended-artist-img-new" />
+                      <span className="recommended-match-badge-new">Most Booked</span>
                     </div>
-                    <div className="recommended-artist-info">
-                      <h4 className="recommended-artist-name">Chandni Singh</h4>
-                      <p className="recommended-artist-category">Bridal Makeup Expert</p>
-                      <div className="recommended-artist-meta">
-                        <span className="recommended-artist-rating">★ 4.8 (105)</span>
-                        <span className="recommended-artist-price">₹35,000 onwards</span>
+                    <div className="recommended-artist-info-new">
+                      <h4 className="recommended-artist-name-new">Chandni Singh</h4>
+                      <p className="recommended-artist-category-new">Minimalist Bridal Expert</p>
+                      <div className="recommended-artist-meta-new">
+                        <span className="recommended-artist-rating-new">★ 4.8 (105)</span>
+                        <span className="recommended-artist-price-new">₹35,000 onwards</span>
                       </div>
                     </div>
                   </div>
 
                   {/* Card 3 */}
-                  <div className="recommended-artist-card" style={{ cursor: 'pointer' }} onClick={() => setActiveTab('marketplace')}>
-                    <div className="recommended-artist-img-wrapper">
-                      <img src="/recommend_salon2.png" alt="Anu Kaushik" className="recommended-artist-img" />
-                      <span className="recommended-match-badge">91% Match</span>
+                  <div className="recommended-artist-card-new" onClick={() => setActiveTab('marketplace')}>
+                    <div className="recommended-artist-img-wrapper-new">
+                      <img src="/recommend_salon2.png" alt="Anu Kaushik" className="recommended-artist-img-new" />
+                      <span className="recommended-match-badge-new">Most Booked</span>
                     </div>
-                    <div className="recommended-artist-info">
-                      <h4 className="recommended-artist-name">Anu Kaushik</h4>
-                      <p className="recommended-artist-category">Mehendi Artist</p>
-                      <div className="recommended-artist-meta">
-                        <span className="recommended-artist-rating">★ 4.9 (92)</span>
-                        <span className="recommended-artist-price">₹30,000 onwards</span>
+                    <div className="recommended-artist-info-new">
+                      <h4 className="recommended-artist-name-new">Anu Kaushik</h4>
+                      <p className="recommended-artist-category-new">Award-Winning Studio</p>
+                      <div className="recommended-artist-meta-new">
+                        <span className="recommended-artist-rating-new">★ 4.9 (92)</span>
+                        <span className="recommended-artist-price-new">₹30,000 onwards</span>
                       </div>
                     </div>
-                  </div>
-
-                  {/* Right Arrow Navigation Overlay */}
-                  <div className="recommended-carousel-arrow" onClick={() => setActiveTab('marketplace')}>
-                    <span>&gt;</span>
                   </div>
                 </div>
               </div>
 
               {/* 3. Upcoming Bookings */}
-              <div className="dashboard-card-sec" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+              <div className="dashboard-card-sec" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', padding: '12px' }}>
                 <div>
-                  <div className="card-sec-header">
-                    <h3 className="card-sec-title">Upcoming Bookings</h3>
+                  <div className="card-sec-header" style={{ marginBottom: '8px' }}>
+                    <h3 className="card-sec-title" style={{ fontSize: '0.85rem' }}>Upcoming Bookings</h3>
                     <span 
                       onClick={() => setActiveTab('bookings')} 
-                      style={{ fontSize: '0.75rem', color: 'var(--maroon-btn)', cursor: 'pointer', textDecoration: 'underline' }}
+                      style={{ fontSize: '0.7rem', color: 'var(--maroon-btn)', cursor: 'pointer', textDecoration: 'underline' }}
                     >
                       View All
                     </span>
                   </div>
 
-                  {trialBookings.map((booking, index, arr) => (
-                    <div key={booking.id} className="booking-item" style={{ borderBottom: index === arr.length - 1 ? 'none' : '1px solid var(--card-border)', paddingBottom: index === arr.length - 1 ? '0' : '8px', marginBottom: index === arr.length - 1 ? '5px' : '0', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px' }} onClick={() => setActiveTab('bookings')}>
-                      <img src={booking.image || '/recommend_salon1.png'} alt="Salon" className="booking-item-img" style={{ width: '32px', height: '32px', borderRadius: '50%', objectFit: 'cover' }} />
-                      <div className="booking-item-details" style={{ flex: 1, textAlign: 'left' }}>
-                        <h4 className="booking-item-name" style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-dark)' }}>{booking.name}</h4>
-                        <p className="booking-item-service" style={{ fontSize: '0.65rem', color: 'var(--text-muted)' }}>{booking.service}</p>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                    {trialBookings.slice(0, 2).map((booking, index) => (
+                      <div key={booking.id} className="booking-item" style={{ borderBottom: index === 0 ? '1px solid var(--card-border)' : 'none', paddingBottom: index === 0 ? '8px' : '0', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px' }} onClick={() => setActiveTab('bookings')}>
+                        <img src={booking.image || '/recommend_salon1.png'} alt="Salon" className="booking-item-img" style={{ width: '32px', height: '32px', borderRadius: '50%', objectFit: 'cover' }} />
+                        <div className="booking-item-details" style={{ flex: 1, textAlign: 'left' }}>
+                          <h4 className="booking-item-name" style={{ fontSize: '0.72rem', fontWeight: 600, color: 'var(--text-dark)' }}>{booking.name}</h4>
+                          <p className="booking-item-service" style={{ fontSize: '0.65rem', color: 'var(--text-muted)' }}>{booking.service}</p>
+                        </div>
+                        <div className="booking-item-time" style={{ textAlign: 'right', fontSize: '0.68rem' }}>
+                          <strong style={{ display: 'block', color: 'var(--text-dark)' }}>{booking.date}</strong>
+                          <div style={{ color: booking.status === 'Confirmed' ? 'green' : 'orange', fontWeight: 600 }}>{booking.status}</div>
+                        </div>
                       </div>
-                      <div className="booking-item-time" style={{ textAlign: 'right', fontSize: '0.7rem' }}>
-                        <strong style={{ display: 'block', color: 'var(--text-dark)' }}>{booking.date}</strong>
-                        <div style={{ color: booking.status === 'Confirmed' ? 'green' : 'orange', fontWeight: 600 }}>{booking.status}</div>
-                      </div>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
                 </div>
 
-                <button className="btn-readiness-wide" style={{ marginTop: '8px' }} onClick={() => setActiveTab('marketplace')}>
+                <button className="btn-readiness-wide" style={{ marginTop: '8px', padding: '8px' }} onClick={() => setActiveTab('marketplace')}>
                   + New Booking
                 </button>
               </div>
+
+
 
             </div>
 
@@ -851,28 +901,28 @@ function App() {
               </div>
 
               {/* 3. Exclusive Offer */}
-              <div className="exclusive-offer-new">
-                <div className="exclusive-offer-details">
+              <div className="exclusive-offer-new-mockup" onClick={() => setActiveTab('wallet')}>
+                <div className="exclusive-offer-details-mockup">
                   <div>
-                    <span className="exclusive-offer-header">
-                      <Crown size={12} style={{ color: '#c49f57' }} /> Exclusive Offer for You
+                    <span className="exclusive-offer-header-mockup">
+                      <Crown size={12} style={{ color: '#c49f57' }} /> Exclusive Offer
                     </span>
-                    <h4 className="exclusive-offer-title">
+                    <h4 className="exclusive-offer-title-mockup">
                       Flat 15% OFF
                       <span>on your next booking</span>
                     </h4>
                   </div>
                   <div>
-                    <div className="exclusive-offer-code">
+                    <div className="exclusive-offer-code-mockup">
                       Use Code: <strong>NOOR15</strong>
                     </div>
-                    <button className="btn-exclusive-book" onClick={() => setActiveTab('marketplace')}>
+                    <button className="btn-exclusive-book-mockup" onClick={(e) => { e.stopPropagation(); setActiveTab('marketplace'); }}>
                       Book Now
                     </button>
                   </div>
                 </div>
-                <div className="exclusive-offer-img-box">
-                  <img src="/exclusive_banner.png" alt="Exclusive Offer" className="exclusive-offer-img" />
+                <div className="exclusive-offer-img-box-mockup">
+                  <img src="/exclusive_banner.png" alt="Exclusive Offer" className="exclusive-offer-img-mockup" />
                 </div>
               </div>
 
